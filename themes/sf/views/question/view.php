@@ -40,32 +40,73 @@ $this->title = $question->title;
 
             <?php if ($myAnswer) { ?>
                 <div class="text-center">
-                    <?= Yii::t('app', '这个问题您已经提交过答案, 您可以对<a href="{href}">现有答案</a>进行<a href="{href_edit}">修改</a>', ['href' => '#answer-' . $myAnswer->id, 'href_edit' => Url::to(['answer/update', 'question_id' => $question->id, 'answer_id' => $myAnswer->id])]) ?>
+                    <?= Yii::t('app', '这个问题您已经提交过答案, 您可以对<a href="{href}">现有答案</a>进行<a href="javascript:;" class="cmd-edit-answer" data-toggle="modal" data-target="#answer-editor-box">修改</a>', ['href' => '#answer-' . $myAnswer->id]) ?>
                 </div>
+
+                <div class="modal" id="answer-editor-box" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" style="width: 850px">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                <h4 class="modal-title" id="myModalLabel"><?= \Yii::t('app', '修改答案') ?></h4>
+                            </div>
+                            <div class="modal-body">
+
+                                <?php $form = ActiveForm::begin(['action' => ['answer/update', 'id' => $myAnswer->id]]) ?>
+                                <?= $form->field($myAnswer, 'body')->widget(Widget::className(), [
+                                    'options' => [
+                                        'style' => 'display:none',
+                                    ],
+                                    'settings' => [
+                                        'lang' => 'zh_cn',
+                                        'formatting' => ['blockquote', 'pre'],
+                                        'minHeight' => 200,
+                                        'imageUpload' => Url::to(['/site/image-upload']),
+                                        'fileUpload' => Url::to(['/site/file-upload']),
+                                        'plugins' => [
+                                            'table',
+                                            'video',
+                                            'fullscreen',
+                                        ],
+                                    ],
+                                ])->label(false) ?>
+                                <?= $form->field($myAnswer, 'is_anonymous')->checkbox() ?>
+                                <div class="form-group">
+                                    <?= Html::submitButton(Yii::t('app', '发布回答'), ['class' => 'btn btn-primary']) ?>
+                                </div>
+                                <?php ActiveForm::end() ?>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
             <?php } else { ?>
                 <?php $form = ActiveForm::begin(['action' => ['answer/create', 'question_id' => $question->id]]) ?>
-                <?= $form->field($answer, 'body')->widget(Widget::className(), [
-                    'options' => [
-                        'style' => 'display:none',
+            <?= $form->field($answer, 'body')->widget(Widget::className(), [
+                'options' => [
+                    'style' => 'display:none',
+                ],
+                'settings' => [
+                    'lang' => 'zh_cn',
+                    'formatting' => ['blockquote', 'pre'],
+                    'minHeight' => 200,
+                    'imageUpload' => Url::to(['/site/image-upload']),
+                    'fileUpload' => Url::to(['/site/file-upload']),
+                    'plugins' => [
+                        'table',
+                        'video',
+                        'fullscreen',
                     ],
-                    'settings' => [
-                        'lang' => 'zh_cn',
-                        'formatting' => ['blockquote', 'pre'],
-                        'minHeight' => 200,
-                        'imageUpload' => Url::to(['/site/image-upload']),
-                        'fileUpload' => Url::to(['/site/file-upload']),
-                        'plugins' => [
-                            'table',
-                            'video',
-                            'fullscreen',
-                        ],
-                    ],
-                ])->label(false) ?>
-                <?= $form->field($answer, 'is_anonymous')->checkbox() ?>
-                <div class="form-group">
-                    <?= Html::submitButton(Yii::t('app', '发布回答'), ['class' => 'btn btn-primary']) ?>
-                </div>
-                <?php ActiveForm::end() ?>
+                ],
+            ])->label(false) ?>
+            <?= $form->field($answer, 'is_anonymous')->checkbox() ?>
+            <div class="form-group">
+                <?= Html::submitButton(Yii::t('app', '发布回答'), ['class' => 'btn btn-primary']) ?>
+            </div>
+            <?php ActiveForm::end() ?>
             <?php } ?>
         </div>
 

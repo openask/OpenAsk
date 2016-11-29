@@ -61,4 +61,15 @@ class AnswerController extends Controller
         print_r($answer->errors);
     }
 
+    public function actionUpdate($id)
+    {
+        $answer = Answer::findOne($id);
+        if (!$answer) {
+            throw new NotFoundHttpException();
+        }
+        if ($answer->load(\Yii::$app->request->post()) && $answer->save()) {
+            return $this->redirect(['question/answer', 'question_id' => $answer->question_id, 'answer_id' => $answer->id]);
+        }
+    }
+
 }
