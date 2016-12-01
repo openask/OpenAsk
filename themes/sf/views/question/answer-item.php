@@ -27,6 +27,9 @@ use yii\helpers\Url;
             <div class="col-md-8 col-sm-8 col-xs-10">
             <span><?= Yii::$app->formatter->asRelativeTime($model->created_at) ?><?= Yii::t('app', '回答') ?></span>
             <span><a class="comment-count cmd-toggle-comment" href="javascript:;"><?= $model->count_comment > 0 ? $model->count_comment . ' ' : '' ?><?= Yii::t('app', '评论') ?></a></span>
+                <?php if (!empty($myAnswer) && $myAnswer->id == $model->id) : ?>
+            <span><a href class="cmd-edit-answer" data-toggle="modal" data-target="#answer-editor-box">编辑</a></span>
+                <?php endif; ?>
             </div>
             <div class="col-md-2 col-sm-2 col-xs-2 author-avatar">
                 <?= Html::a(Html::img($model->author->avatar), $model->author->getHomePageLink(), ['class' => 'mr10 avatar avatar-32']) ?>

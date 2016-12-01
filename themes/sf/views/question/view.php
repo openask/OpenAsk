@@ -13,6 +13,7 @@ use kartik\icons\Icon;
 
 /* @var $question app\models\Question */
 /* @var $answer app\models\Answer */
+/* @var $myAnswer app\models\Answer */
 /* @var $viewAnswer app\models\Answer */
 
 $this->title = $question->title;
@@ -36,11 +37,12 @@ $this->title = $question->title;
                 'dataProvider' => $dataProvider,
                 'itemView' => 'answer-item',
                 'summary' => '',
+                'viewParams' => ['myAnswer' => $myAnswer],
             ]) ?>
 
             <?php if ($myAnswer) { ?>
                 <div class="text-center">
-                    <?= Yii::t('app', '这个问题您已经提交过答案, 您可以对<a href="{href}">现有答案</a>进行<a href="javascript:;" class="cmd-edit-answer" data-toggle="modal" data-target="#answer-editor-box">修改</a>', ['href' => '#answer-' . $myAnswer->id]) ?>
+                    <?= Yii::t('app', '这个问题您已经提交过答案, 您可以对<a href="{href}">现有答案</a>进行<a href class="cmd-edit-answer" data-toggle="modal" data-target="#answer-editor-box">修改</a>', ['href' => '#answer-' . $myAnswer->id]) ?>
                 </div>
 
                 <div class="modal" id="answer-editor-box" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -72,7 +74,9 @@ $this->title = $question->title;
                                 ])->label(false) ?>
                                 <?= $form->field($myAnswer, 'is_anonymous')->checkbox() ?>
                                 <div class="form-group">
-                                    <?= Html::submitButton(Yii::t('app', '发布回答'), ['class' => 'btn btn-primary']) ?>
+                                    <?= Html::submitButton(Yii::t('app', '提交'), ['class' => 'btn btn-primary']) ?>
+                                    <?= $form->field($myAnswer, 'is_deleted', ['options' => ['tag' => 'span']])
+                                        ->checkbox(['label' => \Yii::t('app', '删除回答')]) ?>
                                 </div>
                                 <?php ActiveForm::end() ?>
 

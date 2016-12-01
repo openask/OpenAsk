@@ -37,6 +37,8 @@ class Answer extends ActiveRecord
 
     use VoteTrait;
 
+    public $is_deleted;
+
     public static function tableName()
     {
         return '{{%answer}}';
@@ -46,6 +48,7 @@ class Answer extends ActiveRecord
     {
         return [
             'default' => ['body', 'is_anonymous', '!author_id', 'question_id'],
+            'update' => ['body', 'is_anonymous', 'is_deleted'],
         ];
     }
 
@@ -56,7 +59,7 @@ class Answer extends ActiveRecord
 
             [['body'], 'string'],
             [['created_at', 'author_id', 'updated_at'], 'required'],
-            [['created_at', 'author_id', 'updated_at', 'modified_by', 'modified_at', 'question_id', 'count_comment', 'count_view', 'count_vote_up', 'count_vote_down', 'count_follow', 'count_thank', 'count_mark', 'count_no_help', 'is_lock', 'is_anonymous'], 'integer'],
+            [['created_at', 'author_id', 'updated_at', 'modified_by', 'modified_at', 'question_id', 'count_comment', 'count_view', 'count_vote_up', 'count_vote_down', 'count_follow', 'count_thank', 'count_mark', 'count_no_help', 'is_lock', 'is_anonymous', 'is_deleted'], 'integer'],
             [['uuid'], 'string', 'max' => 36],
             [['author_id', 'question_id'], 'unique', 'targetAttribute' => ['author_id', 'question_id'], 'message' => 'The combination of Author ID and Question ID has already been taken.'],
         ];
@@ -91,6 +94,12 @@ class Answer extends ActiveRecord
             UserActionHistory::createAnswer($this->author_id, $this);
         }
 
+    }
+
+    public function afterDelete()
+    {
+        // 答案删除后，更新问题回答数
+        $this->question->updateCountAnswer();
     }
 
     public function attributeLabels()

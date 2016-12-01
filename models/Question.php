@@ -213,4 +213,9 @@ class Question extends ActiveRecord
     {
         return $this->hasOne(QuestionMark::className(), ['question_id' => 'id'])->andWhere(['user_id' => \Yii::$app->user->id]);
     }
+
+    public function updateCountAnswer()
+    {
+        $this->updateAttributes(['count_answer' => Answer::find()->where(['question_id' => $this->id])->count()]);
+    }
 }

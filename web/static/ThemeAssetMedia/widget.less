@@ -47,4 +47,12 @@
   {
     color: @brand-primary;
   }
+  &.disabled {
+    .asc,.desc {
+      &:hover {
+        cursor: default;
+        color: inherit;
+      }
+    }
+  }
 }
