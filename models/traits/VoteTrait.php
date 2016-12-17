@@ -68,7 +68,7 @@ trait VoteTrait
     public function getVoteLog()
     {
         list($vote_up, $vote_down) = $this->getVoteTypeValue();
-        return $this->hasOne(VoteLog::className(), ['uuid' => 'uuid', 'type' => [$vote_up, $vote_down]])->andWhere(['user_id' => \Yii::$app->user->id]);
+        return $this->hasOne(VoteLog::className(), ['uuid' => 'uuid'])->andWhere(['user_id' => \Yii::$app->user->id, 'type' => [$vote_up, $vote_down]]);
     }
 
     public function getIsVotedUp()
