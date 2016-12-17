@@ -31,3 +31,11 @@ $(document)
             $this.closest('div').find('.count').text(json.count)
         })
     })
+    .on('beforeSubmit', '.form-answer-edit', function () {
+        if ($(this).find('#answer-is_deleted').prop('checked')) {
+            // @tod i18n
+            if (!confirm('确定删除？')) {
+                return false
+            }
+        }
+    })

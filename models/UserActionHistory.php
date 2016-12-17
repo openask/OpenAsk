@@ -8,6 +8,7 @@
 
 namespace app\models;
 
+use app\behaviors\UuidBehavior;
 use yii\db\ActiveRecord;
 
 
@@ -26,8 +27,15 @@ class UserActionHistory extends ActiveRecord
 {
     const TYPE_FOLLOW_QUESTION = 1; // 关注该问题
     const TYPE_CREATE_QUESTION = 2; // 创建该问题
-    const TYPE_VOTE_ANSWER = 3; // 赞同该回答
     const TYPE_CREATE_ANSWER = 4; // 回答了该问题
+
+    const TYPE_VOTE_UP_ANSWER = 3; // 顶回答
+    const TYPE_VOTE_DOWN_ANSWER = 5; // 踩回答
+
+    const TYPE_VOTE_UP_QUESTION = 6; // 顶问题
+    const TYPE_VOTE_DOWN_QUESTION = 7; // 踩问题
+
+    const TYPE_VOTE_UP_COMMENT = 8; // 顶评论
 
     /**
      * @inheritdoc
@@ -43,7 +51,7 @@ class UserActionHistory extends ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'user_id', 'time'], 'required'],
+            [['type', 'user_id'], 'required'],
             [['type', 'user_id', 'time', 'question_id', 'answer_id', 'is_anonymous'], 'integer'],
         ];
     }
@@ -71,7 +79,7 @@ class UserActionHistory extends ActiveRecord
                 return \Yii::t('app', '关注该问题');
             case self::TYPE_CREATE_QUESTION:
                 return \Yii::t('app', '添加该问题');
-            case self::TYPE_VOTE_ANSWER:
+            case self::TYPE_VOTE_UP_ANSWER:
                 return \Yii::t('app', '赞同该回答');
             case self::TYPE_CREATE_ANSWER:
                 return \Yii::t('app', '回答了该问题');
@@ -93,53 +101,69 @@ class UserActionHistory extends ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+    /**
+     * @param $type
+     * @param $user_id
+     * @param $post Question|Answer|Comment
+     */
     protected static function add($type, $user_id, $post)
     {
         $model = new static([
             'type' => $type,
             'user_id' => $user_id,
             'time' => time(),
-            'is_anonymous' => $post->is_anonymous
+            'is_anonymous' => $post->is_anonymous,
+            'uuid' => $post->uuid,
         ]);
         if ($post instanceof Question) {
             $model->question_id = $post->id;
-        } else {
-            $model->answer_id = $post->id;
+        } else if ($post instanceof Answer) {
             $model->question_id = $post->question_id;
+        } else {
+            $model->question_id = $post->getQuestionId();
         }
-        $model->save(false);
+        return $model->save(false);
     }
 
+    /**
+     * @param $type
+     * @param $user_id
+     * @param $post Question|Answer|Comment
+     */
+    public static function vote($type, $user_id, $post)
+    {
+        return self::add($type, $user_id, $post);
+    }
 
     /**
      * 回答问题
-     * @param int $user
+     * @param int $user_id
      * @param Answer $answer
      */
-    public static function createAnswer($user, Answer $answer)
+    public static function createAnswer($user_id, Answer $answer)
     {
-        self::add(self::TYPE_CREATE_ANSWER, $user, $answer);
+        return self::add(self::TYPE_CREATE_ANSWER, $user_id, $answer);
     }
 
 
     /**
      * 创建问题
-     * @param int $user
+     * @param int $user_id
      * @param Question $question
      */
-    public static function createQuestion($user, Question $question)
+    public static function createQuestion($user_id, Question $question)
     {
-        self::add(self::TYPE_CREATE_QUESTION, $user, $question);
+        return self::add(self::TYPE_CREATE_QUESTION, $user_id, $question);
     }
 
     /**
      * 关注问题
      * 如果已关注，则取消关注
-     * @param int $user
+     * @param int $user_id
      * @param Question $question
      * @return string
      */
-    public static function followQuestion($user, Question $question)
+    public static function followQuestion($user_id, Question $question)
     {
         $follow = $question->follow;
         // 已关注
@@ -148,7 +172,7 @@ class UserActionHistory extends ActiveRecord
             return 'unfollow';
         } else {
             $follow = new QuestionFollow([
-                'user_id' => $user,
+                'user_id' => $user_id,
                 'question_id' => $question->id,
                 'add_time' => time(),
             ]);
@@ -161,11 +185,11 @@ class UserActionHistory extends ActiveRecord
     /**
      * 收藏问题
      * 如果已收藏，则取消收藏
-     * @param int $user
+     * @param int $user_id
      * @param Question $question
      * @return string
      */
-    public static function markQuestion($user, Question $question)
+    public static function markQuestion($user_id, Question $question)
     {
         $mark = $question->mark;
         // 已关注
@@ -174,7 +198,7 @@ class UserActionHistory extends ActiveRecord
             return 'unmark';
         } else {
             $mark = new QuestionMark([
-                'user_id' => $user,
+                'user_id' => $user_id,
                 'question_id' => $question->id,
                 'add_time' => time(),
             ]);

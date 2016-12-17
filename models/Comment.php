@@ -54,8 +54,9 @@ class Comment extends \yii\db\ActiveRecord
                 // 验证是否离上一次评论时间相差 15 秒
                 $lastTime = self::find()->select('created_at')->orderBy('id desc')->asArray()->limit(1)->scalar();
                 // @todo 15 秒做成后台可配置选项
-                if ($lastTime && $lastTime > time() - 15) {
-                    $this->addError($attr, \Yii::t('app', '评论间隔不得少于{sec}秒', ['sec' => 15]));
+                $sec = 15;
+                if ($lastTime && $lastTime > time() - $sec) {
+                    $this->addError($attr, \Yii::t('app', '评论间隔不得少于{sec}秒', ['sec' => $sec]));
                 }
             }]
         ];
@@ -88,7 +89,7 @@ class Comment extends \yii\db\ActiveRecord
                 \Yii::trace($this->author_id);
                 $this->created_at = time();
                 if ($this->reply_comment_id) {
-                    $this->reply_author_id = Comment::find()->select('author_id')->where(['id' => $this->reply_comment_id])->one()->author_id;
+                    $this->reply_author_id = Comment::find()->select('author_id')->where(['id' => $this->reply_comment_id])->scalar();
                 }
             }
             return true;
@@ -134,5 +135,18 @@ class Comment extends \yii\db\ActiveRecord
                 Answer::updateAllCounters(['count_comment' => 1], ['uuid' => $this->puuid]);
             }
         }
+    }
+
+    protected $_questionId;
+    public function getQuestionId()
+    {
+        if ($this->_questionId === null) {
+            if ($this->comment_type == self::COMMENT_TYPE_QUESTION) {
+                $this->_questionId = Question::find()->select('id')->where(['uuid' => $this->puuid])->scalar();
+            } else if ($this->comment_type == self::COMMENT_TYPE_ANSWER) {
+                $this->_questionId = Answer::find()->select('question_id')->where(['uuid' => $this->puuid])->scalar();
+            }
+        }
+        return $this->_questionId;
     }
 }

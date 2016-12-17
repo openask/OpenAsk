@@ -4,6 +4,7 @@ namespace tests\codeception\unit;
 use app\models\Question;
 use app\models\Answer;
 use app\models\VoteLog;
+use app\models\UserActionHistory;
 
 class ModelTest extends TestCase
 {
@@ -23,24 +24,28 @@ class ModelTest extends TestCase
     public function testVote(Question $question, Answer $answer)
     {
 
-        $testVoteState = function ($item, $type = 'no') {
-            $this->assertEquals($type == VoteLog::TYPE_UP ? 1 : 0, VoteLog::find()->where([
+        $testVoteState = function ($item, $type = 'no'){
+            list($vote_up, $vote_down) = $item->getVoteTypeValue();
+            codecept_debug($type);
+            codecept_debug($vote_up);
+            $this->assertEquals($type == $vote_up ? 1 : 0, VoteLog::find()->where([
                 'uuid' => $item->uuid,
-                'type' => VoteLog::TYPE_UP,
+                'type' => $vote_up,
             ])->count());
-            $this->assertEquals($type == VoteLog::TYPE_DOWN ? 1 : 0, VoteLog::find()->where([
+            $this->assertEquals($type == $vote_down ? 1 : 0, VoteLog::find()->where([
                 'uuid' => $item->uuid,
-                'type' => VoteLog::TYPE_DOWN,
+                'type' => $vote_down,
             ])->count());
             $item->refresh();
-            $this->assertEquals($type == VoteLog::TYPE_UP ? 1 : 0, $item->count_vote_up);
-            $this->assertEquals($type == VoteLog::TYPE_DOWN ? 1 : 0, $item->count_vote_down);
+            $this->assertEquals($type == $vote_up ? 1 : 0, $item->count_vote_up);
+            $this->assertEquals($type == $vote_down ? 1 : 0, $item->count_vote_down);
         };
 
         foreach ([$question, $answer] as $item) {
+            list($vote_up, $vote_down) = $item->getVoteTypeValue();
             $ret = $item->voteUp();
             $this->assertEquals(['up' => 1, 'down' => 0], $ret);
-            $testVoteState($item, VoteLog::TYPE_UP);
+            $testVoteState($item, $vote_up);
 
             $ret = $item->voteUp();
             $this->assertEquals(['up' => -1, 'down' => 0], $ret);
@@ -48,11 +53,11 @@ class ModelTest extends TestCase
 
             $ret = $item->voteUp();
             $this->assertEquals(['up' => 1, 'down' => 0], $ret);
-            $testVoteState($item, VoteLog::TYPE_UP);
+            $testVoteState($item, $vote_up);
 
             $ret = $item->voteDown();
             $this->assertEquals(['up' => -1, 'down' => 1], $ret);
-            $testVoteState($item, VoteLog::TYPE_DOWN);
+            $testVoteState($item, $vote_down);
 
             $ret = $item->voteDown();
             $this->assertEquals(['up' => 0, 'down' => -1], $ret);
@@ -60,7 +65,7 @@ class ModelTest extends TestCase
 
             $ret = $item->voteUp();
             $this->assertEquals(['up' => 1, 'down' => 0], $ret);
-            $testVoteState($item, VoteLog::TYPE_UP);
+            $testVoteState($item, $vote_up);
         }
     }
 
