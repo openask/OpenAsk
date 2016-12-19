@@ -107,7 +107,7 @@ class UserActionHistory extends ActiveRecord
      */
     protected static function add($type, $user_id, $post)
     {
-        $post->refresh();
+        $post->refresh(); // 更新 uuid 值为最新，否则有可能拿到的是 UUID() 表达式
         $model = new static([
             'type' => $type,
             'user_id' => $user_id,
