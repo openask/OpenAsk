@@ -23,11 +23,11 @@ use yii\helpers\Html;
             </div>
             <div class="col-md-3 col-sm-4 hidden-xs">
                 <div>
-                    <button class="btn btn-success btn-sm mr15 op cmd-follow-question"><?= Yii::t('app', '关注') ?></button>
+                    <button class="btn btn-success btn-sm mr15 op cmd-follow-question"><?= $question->follow ? Yii::t('app', '已关注') :  Yii::t('app', '关注') ?></button>
                     <strong class="count"><?= $question->count_follow ?></strong> <?= Yii::t('app', '关注') ?>
                 </div>
                 <div class="mt10">
-                    <button class="btn btn-default btn-sm mr15 op cmd-mark-question"><?= Yii::t('app', '收藏') ?></button>
+                    <button class="btn btn-default btn-sm mr15 op cmd-mark-question"><?= $question->mark ? Yii::t('app', '已收藏') :  Yii::t('app', '收藏') ?></button>
                     <strong class="count"><?= $question->count_mark ?></strong> <?= Yii::t('app', '收藏') ?>，
                     <strong><?= $question->count_view ?></strong> <?= Yii::t('app', '浏览') ?>
                 </div>

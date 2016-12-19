@@ -8,7 +8,6 @@
 
 namespace app\models;
 
-use app\behaviors\UuidBehavior;
 use yii\db\ActiveRecord;
 
 
@@ -108,6 +107,7 @@ class UserActionHistory extends ActiveRecord
      */
     protected static function add($type, $user_id, $post)
     {
+        $post->refresh();
         $model = new static([
             'type' => $type,
             'user_id' => $user_id,
@@ -168,6 +168,7 @@ class UserActionHistory extends ActiveRecord
         $follow = $question->follow;
         // 已关注
         if ($follow && $follow->delete()) {
+            static::deleteAll(['uuid' => $question->uuid, 'type' => self::TYPE_FOLLOW_QUESTION]);
             $question->updateCountFollow();
             return 'unfollow';
         } else {
@@ -177,6 +178,7 @@ class UserActionHistory extends ActiveRecord
                 'add_time' => time(),
             ]);
             $follow->save(false);
+            static::add(self::TYPE_FOLLOW_QUESTION, $user_id, $question);
             $question->updateCountFollow();
             return 'followed';
         }

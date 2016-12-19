@@ -103,6 +103,16 @@ class ModelTest extends TestCase
         $this->assertEquals('<p>单元测试内容</p><a href="http://www.qq.com/">腾讯</a>', $question->body);
 
         $question->refresh();
+codecept_debug($question->id);
+codecept_debug($question->uuid);
+        $question->refresh();
+codecept_debug($question->uuid);
+        $this->tester->seeRecord(UserActionHistory::className(), [
+            'uuid' => $question->uuid,
+            'question_id' => $question->id,
+            'user_id' => $question->author_id,
+            'type' => UserActionHistory::TYPE_CREATE_QUESTION,
+        ]);
 
         return $question;
     }
@@ -135,6 +145,14 @@ class ModelTest extends TestCase
         $this->assertEquals('<p>单元测试回答内容</p><a href="http://www.qq.com/">腾讯</a>', $answer->body);
 
         $answer->refresh();
+
+        $this->tester->seeRecord(UserActionHistory::className(), [
+            'uuid' => $answer->uuid,
+            'question_id' => $answer->question_id,
+            'user_id' => $answer->author_id,
+            'type' => UserActionHistory::TYPE_CREATE_ANSWER,
+        ]);
+
         return $answer;
     }
 }
