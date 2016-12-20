@@ -3,6 +3,7 @@ namespace tests\codeception\unit;
 
 use app\models\Question;
 use app\models\Answer;
+use app\models\QuestionFollow;
 use app\models\VoteLog;
 use app\models\UserActionHistory;
 
@@ -114,6 +115,11 @@ codecept_debug($question->uuid);
             'type' => UserActionHistory::TYPE_CREATE_QUESTION,
         ]);
 
+        $this->tester->seeRecord(QuestionFollow::className(), [
+            'question_id' => $question->id,
+            'user_id' => $question->author_id,
+        ]);
+
         return $question;
     }
 
@@ -151,6 +157,11 @@ codecept_debug($question->uuid);
             'question_id' => $answer->question_id,
             'user_id' => $answer->author_id,
             'type' => UserActionHistory::TYPE_CREATE_ANSWER,
+        ]);
+
+        $this->tester->seeRecord(QuestionFollow::className(), [
+            'question_id' => $answer->question_id,
+            'user_id' => $answer->author_id,
         ]);
 
         return $answer;

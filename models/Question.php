@@ -101,11 +101,11 @@ class Question extends ActiveRecord
         return $this->_tagValues;
     }
 
-    private $_tabValuesSeted;
+    private $_tagValuesSeted;
     public function setTagValues($values)
     {
         $this->_tagValues = $this->filterTagValues($values);
-        $this->_tabValuesSeted = true;
+        $this->_tagValuesSeted = true;
     }
 
     public function filterTagValues($values)
@@ -135,9 +135,12 @@ class Question extends ActiveRecord
 
         if ($insert) {
             UserActionHistory::createQuestion($this->author_id, $this);
+
+            // 新建问题自动关注该问题
+            UserActionHistory::followQuestion($this->author_id, $this, false);
         }
 
-        if ($this->_tabValuesSeted) {
+        if ($this->_tagValuesSeted) {
             // 删除话题关联数据
             QuestionTopic::deleteAll(['post_id' => $this->id]);
             // 添加话题关联

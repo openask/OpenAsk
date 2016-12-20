@@ -92,6 +92,9 @@ class Answer extends ActiveRecord
             Question::updateAllCounters(['count_answer' => 1], ['id' => $this->question_id]);
 
             UserActionHistory::createAnswer($this->author_id, $this);
+
+            // 新建回答自动关注该问题
+            UserActionHistory::followQuestion($this->author_id, $this->question, false, true);
         }
 
     }

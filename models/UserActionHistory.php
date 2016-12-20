@@ -161,11 +161,14 @@ class UserActionHistory extends ActiveRecord
      * 如果已关注，则取消关注
      * @param int $user_id
      * @param Question $question
+     * @param bool $insertHistory 是否插入feed表
+     * @param bool $skipOnFollowed 已经关注是否跳过处理
      * @return string
      */
-    public static function followQuestion($user_id, Question $question)
+    public static function followQuestion($user_id, Question $question, $insertHistory = true, $skipOnFollowed = false)
     {
         $follow = $question->follow;
+        if ($follow && $skipOnFollowed) {return 'followed';}
         // 已关注
         if ($follow && $follow->delete()) {
             static::deleteAll(['uuid' => $question->uuid, 'type' => self::TYPE_FOLLOW_QUESTION]);
@@ -178,7 +181,7 @@ class UserActionHistory extends ActiveRecord
                 'add_time' => time(),
             ]);
             $follow->save(false);
-            static::add(self::TYPE_FOLLOW_QUESTION, $user_id, $question);
+            $insertHistory && static::add(self::TYPE_FOLLOW_QUESTION, $user_id, $question);
             $question->updateCountFollow();
             return 'followed';
         }
