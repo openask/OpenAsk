@@ -5,7 +5,7 @@ RUNTIME_DIR=`pwd`/runtime
 ./yii serve --docroot=@app/web --port=8080 127.0.0.1 &
 echo $! > $RUNTIME_DIR/run-start-dev-yii
 
-cd web/static/ThemeAssetMedia
+cd themes/sf/media
 gulp
 gulp watch &
 echo $! > $RUNTIME_DIR/run-start-dev-gulp
