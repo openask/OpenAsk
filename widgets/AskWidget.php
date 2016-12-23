@@ -10,6 +10,6 @@ class AskWidget extends Widget
 {
     public function run()
     {
-        return $this->render('@app/views/_widgets/ask-widget');
+        return $this->render('ask-widget');
     }
 }

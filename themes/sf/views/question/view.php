@@ -17,6 +17,8 @@ use kartik\icons\Icon;
 /* @var $viewAnswer app\models\Answer */
 
 $this->title = $question->title;
+
+\app\themes\sf\ThemeAsset::registerJsFile('question.js', $this);
 ?>
 
 <?= $this->render('_question-header', ['question' => $question]) ?>

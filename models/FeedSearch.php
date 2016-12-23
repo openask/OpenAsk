@@ -22,9 +22,11 @@ class FeedSearch extends Object
         $this->_query = UserActionHistory::find();
     }
 
-    public function search($offsetId, $limit)
+    public function search($offset = null, $limit = 20)
     {
-        $this->_query->andWhere(['<', 'id', $offsetId]);
+        if ($offset) {
+            $this->_query->andWhere(['<', 'id', $offset]);
+        }
         $this->_query->limit($limit);
         $feeds = $this->_search();
         if (isset($feeds[0])) {

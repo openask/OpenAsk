@@ -10,6 +10,6 @@ class LoginWidget extends Widget
 {
     public function run()
     {
-        return $this->render('@app/views/_widgets/login-widget');
+        return $this->render('login-widget');
     }
 }

@@ -78,18 +78,20 @@ $config = [
             'rules' => [
                 '/' => 'index/index',
 
-                'people/<slug:.{5,}>' => '/people/view',
-                'people/<slug:.{5,}>/<action:[\w-]+>' => '/people/<action>',
+                'people/<slug:.{5,}>' => 'people/view',
+                'people/<slug:.{5,}>/<action:[\w-]+>' => 'people/<action>',
 
-                'topic/<topic:.+>' => '/question/index',
-                'questions/<filter:.+>' => '/question/index',
-                'questions' => '/question/index',
-                'ask' => '/question/create',
-                'question/<id:[\d]+>' => '/question/view',
-                'question/<id:[\d]+>/edit' => '/question/update',
-                'question/<question_id:[\d]+>/answer/<answer_id:[\d]+>' => '/question/answer',
+                'topic/<topic:.+>' => 'question/index',
+                'questions/<filter:.+>' => 'question/index',
+                'questions' => 'question/index',
+                'ask' => 'question/create',
+                'question/<id:[\d]+>' => 'question/view',
+                'question/<id:[\d]+>/edit' => 'question/update',
+                'question/<question_id:[\d]+>/answer/<answer_id:[\d]+>' => 'question/answer',
 
-                'question/<question_id:[\d]+>/answer/<answer_id:[\d]+>/edit' => '/answer/update',
+                'question/<question_id:[\d]+>/answer/<answer_id:[\d]+>/edit' => 'answer/update',
+
+                '<controller:[\w-]+>' => '<controller>/index',
             ],
         ],
         'view' => [
@@ -97,6 +99,7 @@ $config = [
             'theme' => [
                 'pathMap' => [
                     '@app/views' => '@app/themes/sf/views',
+                    '@app/widgets/views' => '@app/themes/sf/views/_widgets',
                 ],
             ],
         ],

@@ -42,7 +42,7 @@ class CommentWidget extends Widget
             ]);
         } else {
             $comments = Comment::find()->with('author', 'replyAuthor', 'voteLog')->where(['puuid' => $this->puuid])->orderBy('id')->all();
-            return $this->render('@app/views/_widgets/comment-widget', [
+            return $this->render('comment-widget', [
                 'comment' => new Comment(['puuid' => $this->puuid]),
                 'comments' => $comments,
             ]);

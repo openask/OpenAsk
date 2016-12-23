@@ -10,6 +10,6 @@ class SideNavWidget extends Widget
 {
     public function run()
     {
-        return $this->render('@app/views/_widgets/side-nav-widget');
+        return $this->render('side-nav-widget');
     }
 }

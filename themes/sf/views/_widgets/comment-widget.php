@@ -6,6 +6,8 @@ use kartik\icons\Icon;
 
 /** @var Comment $comment */
 /** @var Comment[] $comments */
+
+\app\themes\sf\ThemeAsset::registerJsFile('comment-widget.js', $this);
 ?>
 
 <?php //输出评论列表，默认取出被赞过的评论，点击评论展开全部，再次点击收起来 ?>

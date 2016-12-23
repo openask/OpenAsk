@@ -13,7 +13,7 @@ class VoteWidget extends Widget
 
     public function run()
     {
-        return $this->render('@app/views/_widgets/vote-widget', [
+        return $this->render('vote-widget', [
             'model' => $this->model,
         ]);
     }
