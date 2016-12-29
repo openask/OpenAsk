@@ -100,6 +100,11 @@ class UserActionHistory extends ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
+    public function getHistoryData()
+    {
+        return $this->hasOne(UserActionHistoryData::className(), ['history_id' => 'id']);
+    }
+
     /**
      * @param $type
      * @param $user_id

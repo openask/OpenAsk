@@ -15,3 +15,6 @@
     'itemView' => '_feed-item',
     'summary' => '',
 ]) ?>
+<?php foreach ($dataProvider->models as $userActionHistory): ?>
+    <?= $this->render('_feed-item', ['userActionHistory' => $userActionHistory]) ?>
+<?php endforeach; ?>

@@ -26,7 +26,7 @@ class UserFollow extends ActiveRecord
 
     public static function getFollowsQuery($uid)
     {
-        return static::getBsByAQuery($uid);
+        return static::find()->select('uid')->where(['fans_id' => $uid]);
     }
 
     public static function hasFollowed($a, $b)
