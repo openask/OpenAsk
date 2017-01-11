@@ -9,7 +9,10 @@ use yii\web\View;
 class ThemeAsset extends AssetBundle
 {
 
-    public $sourcePath = __DIR__ . '/media';
+    public function init()
+    {
+        $this->sourcePath = __DIR__ . '/media';
+    }
 
     public $css = [
         'app.css',
