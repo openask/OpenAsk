@@ -42,7 +42,7 @@ $this->title = $question->title;
                 'viewParams' => ['myAnswer' => $myAnswer],
             ]) ?>
 
-            <?php if ($myAnswer) { ?>
+            <?php if ($myAnswer && \app\helpers\Helper::getOpenAskConfig('only_one_answer_per_user')) { ?>
                 <div class="text-center">
                     <?= Yii::t('app', '这个问题您已经提交过答案, 您可以对<a href="{href}">现有答案</a>进行<a href class="cmd-edit-answer" data-toggle="modal" data-target="#answer-editor-box">修改</a>', ['href' => '#answer-' . $myAnswer->id]) ?>
                 </div>

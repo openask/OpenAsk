@@ -89,7 +89,7 @@ NavBar::end();
         '<li class="space">|</li>',
     ];
 
-    foreach (Helper::getOpenAskConfig('topicNames') as $topicName) {
+    foreach (Helper::getOpenAskConfig('topic_names') as $topicName) {
         $items[] = [
             'label' => $topicName,
             'url' => ['/question/index', 'topic' => $topicName],

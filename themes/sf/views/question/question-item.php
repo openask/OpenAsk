@@ -12,7 +12,7 @@ $question = $model;
 
 <div class="question-rank">
     <div class="vote">
-<?= $question->count_vote_up - $question->count_vote_down ?> <div><?= Yii::t('app', '投票') ?></div>
+<?= $question->count_approve - $question->count_oppose ?> <div><?= Yii::t('app', '投票') ?></div>
     </div>
     <div class="answer <?= $question->accept_answer_id ? 'solved' : ($question->count_answer ? 'answered' : '') ?>">
 <?= $question->count_answer ?> <div><?= Yii::t('app', $question->accept_answer_id ? '解决' : '回答') ?></div>

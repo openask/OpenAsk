@@ -4,7 +4,9 @@
 namespace app\widgets;
 
 
+use app\models\Answer;
 use app\models\Comment;
+use app\models\Question;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\Widget;
@@ -17,34 +19,31 @@ use yii\base\Widget;
 class CommentWidget extends Widget
 {
 
-    public $puuid;
+    /**
+     * @var Question | Answer
+     */
+    public $model;
 
     /**
      * @var bool 是否只显示被赞过的评论
      */
-    public $onlyShowVoted = true;
-
-    public function init()
-    {
-        parent::init();
-        if (empty($this->puuid)) {
-            throw new InvalidConfigException('Property puuid should be set.');
-        }
-    }
+    public $onlyShowApproval = true;
 
     public function run()
     {
-        if ($this->onlyShowVoted) {
-            $comments = Comment::find()->with('author', 'replyAuthor', 'voteLog')->where(['puuid' => $this->puuid])->andWhere(['>', 'count_vote_up', 0])->orderBy('id')->all();
-            return $this->render('@app/views/_widgets/comment-widget', [
-                'comments' => $comments,
+        $query = $this->model->getComments()->with('author', 'replyAuthor', 'voteLog')->orderBy('id');
+        if ($this->onlyShowApproval) {
+            $query->andWhere('count_approve > 0');
+            return $this->render('comment-widget', [
+                'comments' => $query->all(),
                 'showExpand' => true,
+                'model' => $this->model,
             ]);
         } else {
-            $comments = Comment::find()->with('author', 'replyAuthor', 'voteLog')->where(['puuid' => $this->puuid])->orderBy('id')->all();
             return $this->render('comment-widget', [
-                'comment' => new Comment(['puuid' => $this->puuid]),
-                'comments' => $comments,
+                'comments' => $query->all(),
+                'model' => $this->model,
+                'comment' => $this->model->newComment(),
             ]);
         }
     }

@@ -11,7 +11,7 @@ use yii\helpers\Url;
 /* @var string $key */
 
 ?>
-<div id="answer-<?= $model->id ?>" class="post" data-uuid="<?= $model->uuid ?>"  data-model="answer">
+<div id="answer-<?= $model->id ?>" class="post" data-model="answer" data-id="<?= $model->id ?>">
     <div class="vote-wrap">
         <?= VoteWidget::widget([
             'model' => $model,
@@ -41,7 +41,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <?= CommentWidget::widget(['puuid' => $model->uuid]) ?>
+        <?= CommentWidget::widget(['model' => $model]) ?>
     </div>
     <?php $user = Yii::$app->user->identity; ?>
 </div>

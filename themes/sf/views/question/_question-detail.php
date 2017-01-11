@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use app\widgets\VoteWidget;
 use app\widgets\CommentWidget;
 ?>
-<div class="question-detail post" data-uuid="<?= $question->uuid ?>" data-model="question">
+<div class="question-detail post" data-model="question" data-id="<?= $question->id ?>">
     <div class="vote-wrap">
         <?= VoteWidget::widget([
             'model' => $question,
@@ -21,6 +21,6 @@ use app\widgets\CommentWidget;
             <span><a class="comment-count cmd-toggle-comment" href="javascript:;"><?= $question->count_comment > 0 ? $question->count_comment . ' ' : '' ?><?= Yii::t('app', '评论') ?></a></span>
             <span><a class="cmd-invite" href="javascript:;"><?= Yii::t('app', '邀请回答') ?></a></span>
         </div>
-        <?= CommentWidget::widget(['puuid' => $question->uuid]) ?>
+        <?= CommentWidget::widget(['model' => $question]) ?>
     </div>
 </div>

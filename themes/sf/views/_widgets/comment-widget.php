@@ -15,10 +15,10 @@ use kartik\icons\Icon;
     <div class="comments">
         <?php foreach ($comments as $co): ?>
             <?php //@todo display_name 用户设置的时候不允许特殊字符，因此这里没有进行 encode  ?>
-            <div class="comment-item <?= $co->voteLog ? 'voted' : '' ?>" data-id="<?= $co->id ?>" data-uuid="<?= $co->uuid ?>" data-author_display_name="<?= $co->author->display_name ?>">
+            <div class="comment-item <?= $co->voteLog ? 'voted' : '' ?>" data-id="<?= $co->id ?>" data-author_display_name="<?= $co->author->display_name ?>">
                 <div class="vote">
                     <div class="cmd-comment-vote vote-btn"><?= Icon::show('sort-asc') ?></div>
-                    <div class="count <?= $co->count_vote_up > 0 ? 'show' : '' ?>">+<?= $co->count_vote_up ?></div>
+                    <div class="count <?= $co->count_approve > 0 ? 'show' : '' ?>">+<?= $co->count_approve ?></div>
                 </div>
                 <div class="offset">
                     <?php if ($co->replyAuthor): ?>

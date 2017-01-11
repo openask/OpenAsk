@@ -10,7 +10,6 @@ use yii\db\ActiveRecord;
  * @package app\models
  *
  * @property integer $id
- * @property string $uuid
  * @property string $body
  * @property integer $created_at
  * @property integer $author_id
@@ -20,8 +19,8 @@ use yii\db\ActiveRecord;
  * @property integer $question_id
  * @property integer $count_comment
  * @property integer $count_view
- * @property integer $count_vote_up
- * @property integer $count_vote_down
+ * @property integer $count_approve
+ * @property integer $count_oppose
  * @property integer $count_follow
  * @property integer $count_thank
  * @property integer $count_mark
@@ -59,8 +58,7 @@ class Answer extends ActiveRecord
 
             [['body'], 'string'],
             [['created_at', 'author_id', 'updated_at'], 'required'],
-            [['created_at', 'author_id', 'updated_at', 'modified_by', 'modified_at', 'question_id', 'count_comment', 'count_view', 'count_vote_up', 'count_vote_down', 'count_follow', 'count_thank', 'count_mark', 'count_no_help', 'is_lock', 'is_anonymous', 'is_deleted'], 'integer'],
-            [['uuid'], 'string', 'max' => 36],
+            [['created_at', 'author_id', 'updated_at', 'modified_by', 'modified_at', 'question_id', 'count_comment', 'count_view', 'count_approve', 'count_oppose', 'count_follow', 'count_thank', 'count_mark', 'count_no_help', 'is_lock', 'is_anonymous', 'is_deleted'], 'integer'],
             [['author_id', 'question_id'], 'unique', 'targetAttribute' => ['author_id', 'question_id'], 'message' => 'The combination of Author ID and Question ID has already been taken.'],
         ];
     }
@@ -89,7 +87,7 @@ class Answer extends ActiveRecord
             $question->last_answer_by = $this->author_id;
             $question->save(false);
 
-            Question::updateAllCounters(['count_answer' => 1], ['id' => $this->question_id]);
+            $this->question->updateCounters(['count_answer' => 1]);
 
             UserActionHistory::createAnswer($this->author_id, $this);
 
@@ -102,7 +100,7 @@ class Answer extends ActiveRecord
     public function afterDelete()
     {
         // 答案删除后，更新问题回答数
-        $this->question->updateCountAnswer();
+        $this->question->updateCounters(['count_answer' => -1]);
     }
 
     public function attributeLabels()
@@ -111,5 +109,20 @@ class Answer extends ActiveRecord
             'body' => \Yii::t('app', '内容'),
             'is_anonymous' => \Yii::t('app', '匿名'),
         ];
+    }
+
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['answer_id' => 'id']);
+    }
+
+    public function newComment()
+    {
+        return new Comment(['answer_id' => $this->id]);
+    }
+
+    public function updateCountComment()
+    {
+        $this->updateAttributes(['count_comment' => Comment::find()->where(['answer_id' => $this->id])->count()]);
     }
 }

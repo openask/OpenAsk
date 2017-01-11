@@ -9,7 +9,7 @@ use Yii;
  *
  * @property integer $user_id
  * @property integer $last_read_feed
- * @property integer $count_vote_up
+ * @property integer $count_approve
  * @property integer $count_thank
  * @property integer $count_ask
  * @property integer $count_answer
@@ -43,7 +43,7 @@ class UserMeta extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'display_name'], 'required'],
-            [['user_id', 'last_read_feed', 'count_vote_up', 'count_thank', 'count_ask', 'count_answer', 'count_mark', 'gender', 'reputation'], 'integer'],
+            [['user_id', 'last_read_feed', 'count_approve', 'count_thank', 'count_ask', 'count_answer', 'count_mark', 'gender', 'reputation'], 'integer'],
             [['bio'], 'string'],
             [['avatar'], 'string', 'max' => 256],
             [['headline', 'business', 'location', 'display_name', 'slug'], 'string', 'max' => 128],
@@ -60,7 +60,7 @@ class UserMeta extends \yii\db\ActiveRecord
         return [
             'user_id' => 'User ID',
             'last_read_feed' => 'Last Read Feed',
-            'count_vote_up' => 'Count Vote Up',
+            'count_approve' => 'Count Vote Up',
             'count_thank' => 'Count Thank',
             'count_ask' => 'Count Ask',
             'count_answer' => 'Count Answer',

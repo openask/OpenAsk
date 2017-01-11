@@ -13,7 +13,7 @@ $(document)
             $body.val('')
             return false
         }
-        $.post('/comment/create?puuid=' + uuid + '&comment_type=' + model, $form.serialize())
+        $.post($form.attr('action'), $form.serialize())
             .done(function (json) {
                 if (json.errors) { // 评论失败
                     $field_body.find(".help-block").remove()
@@ -98,8 +98,9 @@ $(document)
         $post.find('.expand-comments').remove()
 
         if (!loaded) { // 第一次点击展开
-            var uuid = $post.data('uuid')
-            $.get('/comment?uuid=' + uuid, function (html) {
+            var model = $post.data('model')
+                , id = $post.data('id')
+            $.get('/comment?model='+model+'&id='+id, function (html) {
                 $post.data('comment-loaded', true)
                 $commentBox.replaceWith(html)
                 autosize($post.find('[name="Comment[body]"]'));

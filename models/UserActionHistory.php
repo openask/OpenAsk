@@ -9,6 +9,7 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\db\IntegrityException;
 
 
 /**
@@ -20,21 +21,15 @@ use yii\db\ActiveRecord;
  * @property integer $time
  * @property integer $question_id
  * @property integer $answer_id
- * @property integer $is_anonymous
  */
 class UserActionHistory extends ActiveRecord
 {
     const TYPE_FOLLOW_QUESTION = 1; // 关注该问题
     const TYPE_CREATE_QUESTION = 2; // 创建该问题
+    const TYPE_APPROVE_QUESTION = 3; // 顶问题
     const TYPE_CREATE_ANSWER = 4; // 回答了该问题
-
-    const TYPE_VOTE_UP_ANSWER = 3; // 顶回答
-    const TYPE_VOTE_DOWN_ANSWER = 5; // 踩回答
-
-    const TYPE_VOTE_UP_QUESTION = 6; // 顶问题
-    const TYPE_VOTE_DOWN_QUESTION = 7; // 踩问题
-
-    const TYPE_VOTE_UP_COMMENT = 8; // 顶评论
+    const TYPE_APPROVE_ANSWER = 6; // 顶回答
+    const TYPE_FOLLOW_TOPIC = 7; // 关注话题
 
     /**
      * @inheritdoc
@@ -51,7 +46,17 @@ class UserActionHistory extends ActiveRecord
     {
         return [
             [['type', 'user_id'], 'required'],
-            [['type', 'user_id', 'time', 'question_id', 'answer_id', 'is_anonymous'], 'integer'],
+            [['type', 'user_id', 'created_at', 'question_id', 'answer_id'], 'integer'],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'updatedAtAttribute' => false,
+            ],
         ];
     }
 
@@ -67,7 +72,6 @@ class UserActionHistory extends ActiveRecord
             'time' => 'Time',
             'question_id' => 'Question ID',
             'answer_id' => 'Answer ID',
-            'is_anonymous' => 'Is Anonymous',
         ];
     }
 
@@ -105,39 +109,14 @@ class UserActionHistory extends ActiveRecord
         return $this->hasOne(UserActionHistoryData::className(), ['history_id' => 'id']);
     }
 
-    /**
-     * @param $type
-     * @param $user_id
-     * @param $post Question|Answer|Comment
-     */
-    protected static function add($type, $user_id, $post)
+    public static function add($attr)
     {
-        $post->refresh(); // 更新 uuid 值为最新，否则有可能拿到的是 UUID() 表达式
-        $model = new static([
-            'type' => $type,
-            'user_id' => $user_id,
-            'time' => time(),
-            'is_anonymous' => $post->is_anonymous,
-            'uuid' => $post->uuid,
-        ]);
-        if ($post instanceof Question) {
-            $model->question_id = $post->id;
-        } else if ($post instanceof Answer) {
-            $model->question_id = $post->question_id;
-        } else {
-            $model->question_id = $post->getQuestionId();
+        unset($attr['created_at']);
+        if (static::find()->where($attr)->exists()) {
+            return false;
         }
-        return $model->save(false);
-    }
-
-    /**
-     * @param $type
-     * @param $user_id
-     * @param $post Question|Answer|Comment
-     */
-    public static function vote($type, $user_id, $post)
-    {
-        return self::add($type, $user_id, $post);
+        return (new static($attr))
+            ->save(false);
     }
 
     /**
@@ -147,7 +126,12 @@ class UserActionHistory extends ActiveRecord
      */
     public static function createAnswer($user_id, Answer $answer)
     {
-        return self::add(self::TYPE_CREATE_ANSWER, $user_id, $answer);
+        static::add([
+            'type' => self::TYPE_CREATE_ANSWER,
+            'user_id' => $user_id,
+            'answer_id' => $answer->id,
+            'question_id' => $answer->question_id,
+        ]);
     }
 
 
@@ -158,7 +142,11 @@ class UserActionHistory extends ActiveRecord
      */
     public static function createQuestion($user_id, Question $question)
     {
-        return self::add(self::TYPE_CREATE_QUESTION, $user_id, $question);
+        static::add([
+            'type' => self::TYPE_CREATE_QUESTION,
+            'user_id' => $user_id,
+            'question_id' => $question->id,
+        ]);
     }
 
     /**
@@ -170,24 +158,30 @@ class UserActionHistory extends ActiveRecord
      * @param bool $skipOnFollowed 已经关注是否跳过处理
      * @return string
      */
-    public static function followQuestion($user_id, Question $question, $insertHistory = true, $skipOnFollowed = false)
+    public static function followQuestion($user_id, $question, $insertHistory = true, $skipOnFollowed = false)
     {
-        $follow = $question->follow;
+        $relation = [
+            'type' => Relation::TYPE_FOLLOW_QUESTION,
+            'from' => $user_id,
+            'target' => $question->id,
+        ];
+        $follow = Relation::findOne($relation);
         if ($follow && $skipOnFollowed) {return 'followed';}
         // 已关注
         if ($follow && $follow->delete()) {
-            static::deleteAll(['uuid' => $question->uuid, 'type' => self::TYPE_FOLLOW_QUESTION]);
-            $question->updateCountFollow();
+            $question->updateCounters(['count_follow' => -1]);
             return 'unfollow';
         } else {
-            $follow = new QuestionFollow([
-                'user_id' => $user_id,
-                'question_id' => $question->id,
-                'add_time' => time(),
-            ]);
-            $follow->save(false);
-            $insertHistory && static::add(self::TYPE_FOLLOW_QUESTION, $user_id, $question);
-            $question->updateCountFollow();
+            $follow = new Relation($relation);
+            $follow->save();
+            if ($insertHistory) {
+                static::add([
+                    'type' => self::TYPE_FOLLOW_QUESTION,
+                    'user_id' => $user_id,
+                    'question_id' => $question->id,
+                ]);
+            }
+            $question->updateCounters(['count_follow' => 1]);
             return 'followed';
         }
     }
@@ -201,19 +195,20 @@ class UserActionHistory extends ActiveRecord
      */
     public static function markQuestion($user_id, Question $question)
     {
-        $mark = $question->mark;
+        $relation = [
+            'type' => Relation::TYPE_MARK_QUESTION,
+            'from' => $user_id,
+            'target' => $question->id,
+        ];
+        $mark = Relation::findOne($relation);
         // 已关注
         if ($mark && $mark->delete()) {
-            $question->updateCountMark();
+            $question->updateCounters(['count_mark' => -1]);
             return 'unmark';
         } else {
-            $mark = new QuestionMark([
-                'user_id' => $user_id,
-                'question_id' => $question->id,
-                'add_time' => time(),
-            ]);
-            $mark->save(false);
-            $question->updateCountMark();
+            $mark = new Relation($relation);
+            $mark->save();
+            $question->updateCounters(['count_mark' => 1]);
             return 'marked';
         }
     }

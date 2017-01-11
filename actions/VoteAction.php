@@ -18,13 +18,13 @@ class VoteAction extends Action
     public $type;
 
     /**
-     * @param $uuid string 实体唯一ID
+     * @param $id integer
      * @param $type string up|down 赞还是踩
      * @return array
      * @throws ForbiddenHttpException
      * @throws NotFoundHttpException
      */
-    public function run($uuid, $type = '')
+    public function run($id, $type = '')
     {
         if ($this->type) {
             $type = $this->type;
@@ -32,25 +32,24 @@ class VoteAction extends Action
         \Yii::$app->response->format = 'json';
         $modelClass = $this->modelClass;
         /** @var VoteTrait $model */
-        $model = $modelClass::findOne(['uuid' => $uuid]);
+        $model = $modelClass::findOne($id);
         if (!$model) {
             throw new NotFoundHttpException();
         }
         if ($model->author_id == \Yii::$app->user->id) {
             throw new ForbiddenHttpException();
         }
-        \Yii::trace($model->count_vote_up, __METHOD__.__LINE__);
+
         // 如果是赞，要自动删除之前踩的记录，反之，踩的话要删除之前赞的记录
         if ($type == 'up') {
             $ret = $model->voteUp();
         } else if ($type == 'down') {
             $ret = $model->voteDown();
         }
-        \Yii::trace($model->count_vote_up, __METHOD__.__LINE__);
 
         return [
             'success' => ($type == 'up' && $ret['up'] != 0) || ($type == 'down' && $ret['down'] != 0),
-            'data' => $model->count_vote_up + $ret['up'],
+            'data' => $model->count_approve,
         ];
     }
 }

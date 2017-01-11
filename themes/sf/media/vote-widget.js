@@ -6,10 +6,10 @@ $(document)
             , $widget = $this.closest('.widget-vote')
             , $post = $this.closest('.post')
             , $count = $widget.find('.count')
-            , uuid = $post.data('uuid')
+            , id = $post.data('id')
             , type = $this.is('.asc') ? 'up' : 'down'
             , model = $post.data('model')
-            , api = '/' + model + '/vote?type=' + type + '&uuid=' + uuid
+            , api = '/' + model + '/vote?type=' + type + '&id=' + id
         if ($widget.is('.disabled')) {
             OpenAsk.message('不能给自己顶踩')
             return

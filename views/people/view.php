@@ -40,7 +40,7 @@ $this->title = $user->display_name;
         <div class="i-extra">
             获得
             <span class="i-item-point">
-            <?= Icon::show('thumbs-up') ?> <strong><?= $user->count_vote_up ?></strong> 赞同
+            <?= Icon::show('thumbs-up') ?> <strong><?= $user->count_approve ?></strong> 赞同
                 </span>
             <span class="i-item-point">
             <?= Icon::show('heart') ?> <strong><?= $user->count_thank ?></strong> 感谢

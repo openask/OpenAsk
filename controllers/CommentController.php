@@ -4,11 +4,13 @@
 namespace app\controllers;
 
 
+use app\models\Answer;
 use app\models\Comment;
 use app\models\Question;
 use app\widgets\CommentWidget;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 class CommentController extends Controller
@@ -39,33 +41,45 @@ class CommentController extends Controller
     }
 
     // ajax 取出评论列表
-    public function actionIndex($uuid)
+    public function actionIndex($model, $id)
     {
-        return CommentWidget::widget(['puuid' => $uuid, 'onlyShowVoted' => false]);
-    }
+        $classMap = [
+            'question' => 'app\models\Question',
+            'answer' => 'app\models\Answer',
+        ];
 
-    public function actionCreate($puuid, $comment_type)
-    {
-        \Yii::$app->response->format = 'json';
-        $comment = new Comment();
-        $comment->setAttribute('puuid', $puuid);
-        $comment->setAttribute('comment_type', $comment_type);
-        if ($comment->load(\Yii::$app->request->post()) && $comment->save()) {
-            return [
-                'count_comment' => Comment::find()->where(['puuid' => $puuid])->count(),
-                'html' => CommentWidget::widget(['puuid' => $puuid, 'onlyShowVoted' => false]),
-            ];
-        } else {
-            return ['errors' => $comment->errors];
+        $model = $classMap[$model]::findOne($id);
+
+        if (\Yii::$app->request->isPost && \Yii::$app->request->isAjax) {
+            \Yii::$app->response->format = 'json';
+            $comment = new Comment();
+            if ($model instanceof Question) {
+                $comment->question_id = $model->id;
+            } else {
+                $comment->answer_id = $model->id;
+            }
+            if ($comment->load(\Yii::$app->request->post()) && $comment->save()) {
+                return [
+                    'count_comment' => $model->getComments()->count(),
+                    'html' => CommentWidget::widget(['model' => $model, 'onlyShowApproval' => false]),
+                ];
+            } else {
+                return ['errors' => $comment->errors];
+            }
         }
+        return CommentWidget::widget(['model' => $model, 'onlyShowApproval' => false]);
     }
 
     // 删除评论
-    public function actionDelete($uuid)
+    public function actionDelete($id)
     {
-        $comment = Comment::findOne(['uuid' => $uuid, 'author_id' => \Yii::$app->user->id]);
+        $comment = Comment::findOne(['id' => $id]);
         if (!$comment) {
             throw new NotFoundHttpException();
+        }
+        if ( $this->author_id != \Yii::$app->user->id
+            && !\Yii::$app->user->can('delete_comment', [$comment])){
+            throw new ForbiddenHttpException();
         }
         if ($comment->delete()) {
             return 'OK';

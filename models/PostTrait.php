@@ -4,7 +4,6 @@
 namespace app\models;
 
 
-use app\behaviors\UuidBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\HtmlPurifier;
@@ -22,7 +21,6 @@ trait PostTrait
     {
         return [
             TimestampBehavior::className(),
-            UuidBehavior::className(),
         ];
     }
 

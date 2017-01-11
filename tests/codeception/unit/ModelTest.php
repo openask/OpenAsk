@@ -38,8 +38,8 @@ class ModelTest extends TestCase
                 'type' => $vote_down,
             ])->count());
             $item->refresh();
-            $this->assertEquals($type == $vote_up ? 1 : 0, $item->count_vote_up);
-            $this->assertEquals($type == $vote_down ? 1 : 0, $item->count_vote_down);
+            $this->assertEquals($type == $vote_up ? 1 : 0, $item->count_approve);
+            $this->assertEquals($type == $vote_down ? 1 : 0, $item->count_oppose);
         };
 
         foreach ([$question, $answer] as $item) {

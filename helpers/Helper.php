@@ -16,7 +16,7 @@ class Helper
 
     public static function getOpenAskConfig($key)
     {
-        return ArrayHelper::getValue(Yii::$app->params['OpenAsk'], $key);
+        return ArrayHelper::getValue(Yii::$app->params['openask'], $key);
     }
 
     public static function outputJson()

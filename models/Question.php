@@ -22,8 +22,8 @@ use app\models\traits\VoteTrait;
  * @property integer $count_comment
  * @property integer $count_answer
  * @property integer $count_view
- * @property integer $count_vote_up
- * @property integer $count_vote_down
+ * @property integer $count_approve
+ * @property integer $count_oppose
  * @property integer $count_follow
  * @property integer $count_thank
  * @property integer $count_mark
@@ -83,7 +83,7 @@ class Question extends ActiveRecord
 
             [['body'], 'string'],
             [['created_at', 'author_id', 'updated_at'], 'required'],
-            [['created_at', 'author_id', 'updated_at', 'modified_by', 'modified_at', 'accept_answer_id', 'count_comment', 'count_answer', 'count_view', 'count_vote_up', 'count_vote_down', 'count_follow', 'count_thank', 'count_mark', 'count_no_help', 'is_lock', 'is_anonymous', 'last_active', 'last_answer_id', 'last_answer_by'], 'integer'],
+            [['created_at', 'author_id', 'updated_at', 'modified_by', 'modified_at', 'accept_answer_id', 'count_comment', 'count_answer', 'count_view', 'count_approve', 'count_oppose', 'count_follow', 'count_thank', 'count_mark', 'count_no_help', 'is_lock', 'is_anonymous', 'last_active', 'last_answer_id', 'last_answer_by'], 'integer'],
             [['uuid'], 'string', 'max' => 36],
             [['title'], 'string', 'max' => 512],
         ];
@@ -164,7 +164,7 @@ class Question extends ActiveRecord
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'count_vote_up' => SORT_DESC,
+                    'count_approve' => SORT_DESC,
                 ]
             ],
             'pagination' => [
@@ -196,7 +196,7 @@ class Question extends ActiveRecord
      */
     public function updateCountFollow()
     {
-        $this->updateAttributes(['count_follow' => QuestionFollow::find()->where(['question_id' => $this->id])->count()]);
+        $this->updateAttributes(['count_follow' => Relation::find()->where(['target' => $this->id, 'type' => Relation::TYPE_FOLLOW_QUESTION])->count()]);
     }
 
     /**
@@ -204,21 +204,36 @@ class Question extends ActiveRecord
      */
     public function updateCountMark()
     {
-        $this->updateAttributes(['count_mark' => QuestionMark::find()->where(['question_id' => $this->id])->count()]);
+        $this->updateAttributes(['count_mark' => Relation::find()->where(['target' => $this->id, 'type' => Relation::TYPE_MARK_QUESTION])->count()]);
     }
 
-    public function getFollow()
+    public function isFollowedBy($user_id)
     {
-        return $this->hasOne(QuestionFollow::className(), ['question_id' => 'id'])->andWhere(['user_id' => \Yii::$app->user->id]);
+        return $user_id && Relation::find()->where(['type' => Relation::TYPE_FOLLOW_QUESTION, 'from' => $user_id, 'target' => $this->id])->exists();
     }
 
-    public function getMark()
+    public function isMarkedBy($user_id)
     {
-        return $this->hasOne(QuestionMark::className(), ['question_id' => 'id'])->andWhere(['user_id' => \Yii::$app->user->id]);
+        return $user_id && Relation::find()->where(['type' => Relation::TYPE_MARK_QUESTION, 'from' => $user_id, 'target' => $this->id])->exists();
     }
 
     public function updateCountAnswer()
     {
         $this->updateAttributes(['count_answer' => Answer::find()->where(['question_id' => $this->id])->count()]);
+    }
+
+    public function updateCountComment()
+    {
+        $this->updateAttributes(['count_comment' => Comment::find()->where(['question_id' => $this->id])->count()]);
+    }
+
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['question_id' => 'id']);
+    }
+
+    public function newComment()
+    {
+        return new Comment(['question_id' => $this->id]);
     }
 }
