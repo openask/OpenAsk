@@ -26,7 +26,7 @@ trait PostTrait
 
     public function getAuthor()
     {
-        return $this->hasOne(User::className(), ['id' => 'author_id']);
+        return $this->hasOne(User::className(), ['id' => 'author_id'])->with('profile');
     }
 
     public function sanitize($html)
