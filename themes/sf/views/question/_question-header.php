@@ -15,7 +15,7 @@ use yii\helpers\Html;
                             <li><?= Html::a($topic->name, $topic->getUrl()) ?></li>
                         <?php endforeach; ?>
                     </ul>
-                    <?= Html::a($question->author->display_name, ['/people/view', 'slug' => $question->author->slug], ['class' => 'author']) ?>
+                    <?= Html::a($question->author->profile->display_name, ['/people/view', 'slug' => $question->author->profile->slug], ['class' => 'author']) ?>
                     <?= Yii::$app->formatter->asRelativeTime($question->last_active) ?><?= Yii::t('app', '提问') ?>
                     ·
                     <?= Html::a(Yii::t('app', '编辑'), ['question/update', 'id' => $question->id]) ?>

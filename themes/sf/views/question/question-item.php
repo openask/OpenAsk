@@ -25,8 +25,8 @@ $question = $model;
 <div class="summary">
     <div class="author">
 <?= $question->lastAnswerAuthor ?
-    $question->lastAnswerAuthor->display_name :
-    $question->author->display_name ?>
+    $question->lastAnswerAuthor->profile->display_name :
+    $question->author->profile->display_name ?>
  ·
 <?= Yii::$app->formatter->asRelativeTime($question->last_active) ?>
 <?= Yii::t('app', $question->lastAnswerAuthor ? '回答' : '提问') ?>

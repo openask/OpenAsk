@@ -5,56 +5,47 @@ use yii\helpers\Url;
 
 /**
  * User
- * @property UserMeta $meta
+ * @property UserProfile $profile
  *
  * @property string $display_name
  *
  */
 class User extends \dektrium\user\models\User
 {
-    public function getMeta()
+    public function getProfile()
     {
-        return $this->hasOne(UserMeta::className(), ['user_id' => 'id'])->inverseOf('user');
-    }
-
-    public function __get($name)
-    {
-        try {
-            return parent::__get($name);
-        } catch (UnknownPropertyException $e) {
-            return $this->meta->{$name};
-        }
+        return $this->hasOne(UserProfile::className(), ['user_id' => 'id'])->inverseOf('user');
     }
 
     public static function findBySlug($slug)
     {
-        return UserMeta::findOne(['slug' => $slug])->user;
+        return UserProfile::findOne(['slug' => $slug])->user;
     }
 
     public function getIsMan()
     {
-        return $this->meta->gender == 1;
+        return $this->profile->gender == 1;
     }
 
     public function getIsWoman()
     {
-        return $this->meta->gender == 2;
+        return $this->profile->gender == 2;
     }
 
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
         if ($insert) {
-            $meta = new UserMeta();
-            $meta->setAttribute('display_name', $this->username);
-            $meta->setAttribute('slug', $this->username);
-            $meta->link('user', $this);
+            $profile = new UserProfile();
+            $profile->setAttribute('display_name', $this->username);
+            $profile->setAttribute('slug', $this->username);
+            $profile->link('user', $this);
         }
     }
 
     public function getHomePageLink()
     {
-        return Url::to(['/people/view', 'slug' => $this->slug]);
+        return Url::to(['/people/view', 'slug' => $this->profile->slug]);
     }
 
 }

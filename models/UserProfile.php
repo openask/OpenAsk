@@ -26,14 +26,14 @@ use Yii;
  *
  * @property User $user
  */
-class UserMeta extends \yii\db\ActiveRecord
+class UserProfile extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%user_meta}}';
+        return '{{%user_profile}}';
     }
 
     /**

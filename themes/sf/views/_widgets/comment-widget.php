@@ -15,7 +15,7 @@ use kartik\icons\Icon;
     <div class="comments">
         <?php foreach ($comments as $co): ?>
             <?php //@todo display_name 用户设置的时候不允许特殊字符，因此这里没有进行 encode  ?>
-            <div class="comment-item <?= $co->voteLog ? 'voted' : '' ?>" data-id="<?= $co->id ?>" data-author_display_name="<?= $co->author->display_name ?>">
+            <div class="comment-item <?= $co->voteLog ? 'voted' : '' ?>" data-id="<?= $co->id ?>" data-author_display_name="<?= $co->author->profile->display_name ?>">
                 <div class="vote">
                     <div class="cmd-comment-vote vote-btn"><?= Icon::show('sort-asc') ?></div>
                     <div class="count <?= $co->count_approve > 0 ? 'show' : '' ?>">+<?= $co->count_approve ?></div>
@@ -23,14 +23,14 @@ use kartik\icons\Icon;
                 <div class="offset">
                     <?php if ($co->replyAuthor): ?>
                         <div class="reply">
-                            <?= \Yii::t('app', '回复') ?> <?= Html::a($co->replyAuthor->display_name, ['/people/view', 'slug' => $co->replyAuthor->slug]) ?><?= \Yii::t('app', '：') ?>
+                            <?= \Yii::t('app', '回复') ?> <?= Html::a($co->replyAuthor->profile->display_name, ['/people/view', 'slug' => $co->replyAuthor->profile->slug]) ?><?= \Yii::t('app', '：') ?>
                         </div>
                     <?php endif; ?>
                     <div class="body">
                         <?= Html::encode($co->body) ?>
                     </div>
                     <div class="comment-meta">
-                        <?= Html::a("<strong>{$co->author->display_name}</strong>", ['/people/view', 'slug' => $co->author->slug]) ?>
+                        <?= Html::a("<strong>{$co->author->profile->display_name}</strong>", ['/people/view', 'slug' => $co->author->profile->slug]) ?>
                         ·
                         <span class="meta"><?= Yii::$app->formatter->asRelativeTime($co->created_at) ?></span>
                         <span class="op pull-right">

@@ -152,7 +152,7 @@ class Question extends ActiveRecord
 
     public function getLastAnswerAuthor()
     {
-        return $this->hasOne(User::className(), ['id' => 'last_answer_by']);
+        return $this->hasOne(User::className(), ['id' => 'last_answer_by'])->with('profile');
     }
 
     public function answerSearch($sort = '')

@@ -30,8 +30,8 @@ class FeedSearch extends Object
         $this->_query->limit($limit);
         $feeds = $this->_search($this->user->id);
         if (isset($feeds[0])) {
-            $this->user->meta->last_read_feed = $feeds[0]->id;
-            $this->user->meta->save();
+            $this->user->profile->last_read_feed = $feeds[0]->id;
+            $this->user->profile->save();
         }
         return $feeds;
     }
@@ -71,7 +71,7 @@ class FeedSearch extends Object
         // @todo 关注的话题
         return $this->_query
             ->andWhere(['user_id' => UserFollow::getFollowsQuery($user->id)])
-            ->andWhere(['>', 'id', $user->meta->last_read_feed])
+            ->andWhere(['>', 'id', $user->profile->last_read_feed])
             ->count();
     }
 }

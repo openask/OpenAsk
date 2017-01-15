@@ -32,12 +32,12 @@ use yii\helpers\Url;
                 <?php endif; ?>
             </div>
             <div class="col-md-2 col-sm-2 col-xs-2 author-avatar">
-                <?= Html::a(Html::img($model->author->avatar), $model->author->getHomePageLink(), ['class' => 'mr10 avatar avatar-32']) ?>
+                <?= Html::a(Html::img($model->author->profile->avatar), $model->author->getHomePageLink(), ['class' => 'mr10 avatar avatar-32']) ?>
             </div>
             <div class="col-md-2 col-sm-2 hidden-xs author-info">
                 <div class="author-info-wrap">
-                    <?= Html::a($model->author->display_name, $model->author->getHomePageLink(), ['class' => 'name']) ?>
-                    <div class="reputation"><?= $model->author->reputation ?> <?= Yii::t('app', '声望') ?></div>
+                    <?= Html::a($model->author->profile->display_name, $model->author->getHomePageLink(), ['class' => 'name']) ?>
+                    <div class="reputation"><?= $model->author->profile->reputation ?> <?= Yii::t('app', '声望') ?></div>
                 </div>
             </div>
         </div>

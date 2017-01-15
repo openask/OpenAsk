@@ -8,12 +8,12 @@
 
 /** @var \app\models\UserActionHistory $userActionHistory */
 
-$authorMeta = $userActionHistory->author->meta;
+$profile = $userActionHistory->author->profile;
 ?>
 
 <div class="feed-item">
-    <div class="avatar"><?= \yii\bootstrap\Html::img($authorMeta->avatar) ?></div>
+    <div class="avatar"><?= \yii\bootstrap\Html::img($profile->avatar) ?></div>
     <div class="main">
-        <div class="text-muted"><?= $authorMeta->display_name ?> <?= $userActionHistory->getTypeDesc() ?> · <?= Yii::$app->formatter->asRelativeTime($userActionHistory->time) ?></div>
+        <div class="text-muted"><?= $profile->display_name ?> <?= $userActionHistory->getTypeDesc() ?> · <?= Yii::$app->formatter->asRelativeTime($userActionHistory->time) ?></div>
     </div>
 </div>
