@@ -12,7 +12,7 @@ return [
     'username' => 'root',
     'password' => '',
     'tablePrefix' => 'openask_',
-    'charset' => 'utf8',
+    'charset' => 'utf8mb4',
     'enableSchemaCache' => true,
     'schemaCacheDuration' => 10,
 ];

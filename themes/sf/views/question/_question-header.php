@@ -27,7 +27,7 @@ use yii\helpers\Html;
                     <strong class="count"><?= $question->count_follow ?></strong> <?= Yii::t('app', '关注') ?>
                 </div>
                 <div class="mt10">
-                    <button class="btn btn-default btn-sm mr15 op cmd-mark-question"><?= $question->isFollowedBy(Yii::$app->user->id) ? Yii::t('app', '已收藏') :  Yii::t('app', '收藏') ?></button>
+                    <button class="btn btn-default btn-sm mr15 op cmd-mark-question"><?= $question->isMarkedBy(Yii::$app->user->id) ? Yii::t('app', '已收藏') :  Yii::t('app', '收藏') ?></button>
                     <strong class="count"><?= $question->count_mark ?></strong> <?= Yii::t('app', '收藏') ?>，
                     <strong><?= $question->count_view ?></strong> <?= Yii::t('app', '浏览') ?>
                 </div>

@@ -32,7 +32,7 @@ $this->title = $question->title;
         </div>
 
         <div class="mt20">
-            <?= Html::a(Yii::t('app', '<strong>查看全部 {count} 个回答</strong>', ['count' => 1]), ['view', 'id' => $question->id]) ?>
+            <?= Html::a(Yii::t('app', '<strong>查看全部 {count} 个回答</strong>', ['count' => $question->count_answer]), ['view', 'id' => $question->id]) ?>
         </div>
 
     </div>

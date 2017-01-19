@@ -2,7 +2,7 @@
 
 RUNTIME_DIR=`pwd`/runtime
 
-./yii serve --docroot=@app/web --port=8080 127.0.0.1 &
+./yii serve --docroot=@app/web --port=8080 0.0.0.0 &
 echo $! > $RUNTIME_DIR/run-start-dev-yii
 
 cd themes/sf/media

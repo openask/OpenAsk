@@ -4,6 +4,7 @@
 namespace app\models;
 use app\models\traits\VoteTrait;
 use yii\db\ActiveRecord;
+use app\helpers\Helper;
 
 /**
  * Class Answer
@@ -59,7 +60,6 @@ class Answer extends ActiveRecord
             [['body'], 'string'],
             [['created_at', 'author_id', 'updated_at'], 'required'],
             [['created_at', 'author_id', 'updated_at', 'modified_by', 'modified_at', 'question_id', 'count_comment', 'count_view', 'count_approve', 'count_oppose', 'count_follow', 'count_thank', 'count_mark', 'count_no_help', 'is_lock', 'is_anonymous', 'is_deleted'], 'integer'],
-            [['author_id', 'question_id'], 'unique', 'targetAttribute' => ['author_id', 'question_id'], 'message' => 'The combination of Author ID and Question ID has already been taken.'],
         ];
     }
 
@@ -71,6 +71,15 @@ class Answer extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
+            if (Helper::getOpenAskConfig('only_one_answer_per_user')) {
+                if (static::find()->where([
+                    'question_id' => $this->question_id,
+                    'author_id' => $this->author_id,
+                ])->exists()) {
+                    $this->addError('body', \Yii::t('app', '这个问题您已经提交过答案'));
+                    return false;
+                }
+            }
             $this->body = $this->sanitize($this->body);
             return true;
         }
