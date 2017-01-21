@@ -93,7 +93,7 @@ class CommentController extends Controller
         if (!$comment) {
             throw new NotFoundHttpException();
         }
-        if ( $this->author_id != \Yii::$app->user->id
+        if ( $comment->author_id != \Yii::$app->user->id
             && !\Yii::$app->user->can('delete_comment', [$comment])){
             throw new ForbiddenHttpException();
         }

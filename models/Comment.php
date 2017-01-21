@@ -116,7 +116,7 @@ class Comment extends \yii\db\ActiveRecord
     public function afterDelete()
     {
         parent::afterDelete();
-        VoteLog::deleteAll(['uuid' => $this->uuid]);
+        Relation::deleteAll(['target' => $this->id, 'type' => Relation::TYPE_APPROVE_COMMENT]);
         // 删除问题或回答的评论数
         if ($this->answer_id) {
             $this->answer->updateCounters(['count_comment' => -1]);

@@ -7,7 +7,7 @@ $(document)
             , $field_body = $form.find('.field-comment-body')
             , $post = $form.closest('.post')
             , model = $post.data('model')
-            , uuid = $post.data('uuid')
+            , id = $post.data('id')
             , $commentBox = $post.find('.comment-box')
         if (($body.val().trim()) === '') {
             $body.val('')
@@ -51,7 +51,7 @@ $(document)
     // 删除评论
     .on('click', '.cmd-delete-comment', function () {
         var $comment = $(this).closest('.comment-item ')
-        $.post('/comment/delete?uuid=' + $comment.data('uuid'))
+        $.post('/comment/delete?id=' + $comment.data('id'))
             .done(function () {
                 $comment.fadeOut(function () {
                     $comment.remove()
@@ -71,9 +71,9 @@ $(document)
         var $this = $(this)
             , $comment = $this.closest('.comment-item')
             , $count = $comment.find('.count')
-            , uuid = $comment.data('uuid')
+            , id = $comment.data('id')
 
-        $.post('/comment/like?uuid=' + uuid)
+        $.post('/comment/like?id=' + id)
             .done(function (json) {
                 if (json.success) {
                     if ($comment.hasClass('voted')) {
