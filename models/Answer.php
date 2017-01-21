@@ -71,13 +71,16 @@ class Answer extends ActiveRecord
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            if (Helper::getOpenAskConfig('only_one_answer_per_user')) {
-                if (static::find()->where([
-                    'question_id' => $this->question_id,
-                    'author_id' => $this->author_id,
-                ])->exists()) {
-                    $this->addError('body', \Yii::t('app', '这个问题您已经提交过答案'));
-                    return false;
+            if ($insert) {
+                if (Helper::getOpenAskConfig('only_one_answer_per_user')) {
+                    if (static::find()->where([
+                        'question_id' => $this->question_id,
+                        'author_id' => $this->author_id,
+                    ])->exists()
+                    ) {
+                        $this->addError('body', \Yii::t('app', '这个问题您已经提交过答案'));
+                        return false;
+                    }
                 }
             }
             $this->body = $this->sanitize($this->body);
