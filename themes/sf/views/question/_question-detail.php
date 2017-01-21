@@ -11,7 +11,9 @@ use app\widgets\CommentWidget;
     </div>
     <div class="offset">
         <div class="body">
+            <div class="redactor-editor">
             <?= $question->body ?: $question->title ?>
+            </div>
         </div>
         <div class="meta">
             <span><?= Yii::$app->formatter->asRelativeTime($question->created_at) ?><?= Yii::t('app', '提问') ?></span>

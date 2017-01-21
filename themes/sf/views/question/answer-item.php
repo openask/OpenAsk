@@ -20,7 +20,9 @@ use yii\helpers\Url;
 
     <div class="offset">
         <div class="body">
+            <div class="redactor-editor">
             <?= $model->body ?>
+            </div>
         </div>
 
         <div class="meta row">
