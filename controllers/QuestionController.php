@@ -28,7 +28,7 @@ class QuestionController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['create', 'update', 'follow'],
+                'only' => ['create', 'update', 'follow', 'mark', 'vote'],
                 'rules' => [
                     [
                         'allow' => true,

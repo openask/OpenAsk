@@ -14,16 +14,16 @@ $(document)
             OpenAsk.message('不能给自己顶踩')
             return
         }
-        OpenAsk.post(api, function (json) {
+        $.post(api, function (json) {
             if (json.success) {
                 $count.text(json.data)
-            }
-            if (type == 'up') {
-                $widget.toggleClass('voted-up')
-                    .removeClass('voted-down')
-            } else {
-                $widget.toggleClass('voted-down')
-                    .removeClass('voted-up')
+                if (type == 'up') {
+                    $widget.toggleClass('voted-up')
+                        .removeClass('voted-down')
+                } else {
+                    $widget.toggleClass('voted-down')
+                        .removeClass('voted-up')
+                }
             }
         })
     })

@@ -51,7 +51,7 @@ $(document)
     // 删除评论
     .on('click', '.cmd-delete-comment', function () {
         var $comment = $(this).closest('.comment-item ')
-        OpenAsk.post('/comment/delete?uuid=' + $comment.data('uuid'))
+        $.post('/comment/delete?uuid=' + $comment.data('uuid'))
             .done(function () {
                 $comment.fadeOut(function () {
                     $comment.remove()
@@ -73,7 +73,7 @@ $(document)
             , $count = $comment.find('.count')
             , uuid = $comment.data('uuid')
 
-        OpenAsk.post('/comment/like?uuid=' + uuid)
+        $.post('/comment/like?uuid=' + uuid)
             .done(function (json) {
                 if (json.success) {
                     if ($comment.hasClass('voted')) {

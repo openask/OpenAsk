@@ -23,7 +23,22 @@ class CommentController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
-                    'like' => ['post'],
+                    'vote' => ['post'],
+                ],
+            ],
+            'access' => [
+                'class' => '\yii\filters\AccessControl',
+                'only' => ['index', 'delete', 'vote'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'verbs' => ['POST'],
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'verbs' => ['GET'],
+                    ],
                 ],
             ],
         ];
@@ -32,7 +47,7 @@ class CommentController extends Controller
     public function actions()
     {
         return [
-            'like' => [
+            'vote' => [
                 'class' => 'app\actions\VoteAction',
                 'modelClass' => 'app\models\Comment',
                 'type' => 'up',
@@ -53,6 +68,7 @@ class CommentController extends Controller
         if (\Yii::$app->request->isPost && \Yii::$app->request->isAjax) {
             \Yii::$app->response->format = 'json';
             $comment = new Comment();
+            $comment->author_id = \Yii::$app->user->id;
             if ($model instanceof Question) {
                 $comment->question_id = $model->id;
             } else {

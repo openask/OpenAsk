@@ -4,7 +4,7 @@ $(document)
     .on('click', '.cmd-follow-question', function () {
         var $this = $(this)
             , id = $this.closest('.post-header').data('id')
-        OpenAsk.post('/question/follow?id=' + id, function (json) {
+        $.post('/question/follow?id=' + id, function (json) {
             if (json.status == 'followed') {
                 // @todo i18n
                 $this.text('已关注');
@@ -20,7 +20,7 @@ $(document)
     .on('click', '.cmd-mark-question', function () {
         var $this = $(this)
             , id = $this.closest('.post-header').data('id')
-        OpenAsk.post('/question/mark?id=' + id, function (json) {
+        $.post('/question/mark?id=' + id, function (json) {
             if (json.status == 'marked') {
                 // @todo i18n
                 $this.text('已收藏');
