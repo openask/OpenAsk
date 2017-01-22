@@ -100,6 +100,7 @@ class QuestionController extends Controller
     public function actionView($id, $sort = '')
     {
         $question = $this->findModel($id);
+        $question->updateCounters(['count_view' => 1]);
         $answer = new Answer();
         $dataProvider = $question->answerSearch($sort);
         $myAnswer = !\Yii::$app->user->isGuest ? $question->myAnswer(\Yii::$app->user->id) : null;
