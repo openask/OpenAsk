@@ -23,12 +23,12 @@ class CommentController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['post'],
-                    'vote' => ['post'],
+                    'like' => ['post'],
                 ],
             ],
             'access' => [
                 'class' => '\yii\filters\AccessControl',
-                'only' => ['index', 'delete', 'vote'],
+                'only' => ['index', 'delete', 'like'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -47,7 +47,7 @@ class CommentController extends Controller
     public function actions()
     {
         return [
-            'vote' => [
+            'like' => [
                 'class' => 'app\actions\VoteAction',
                 'modelClass' => 'app\models\Comment',
                 'type' => 'up',
