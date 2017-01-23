@@ -22,6 +22,7 @@ use app\models\traits\VoteTrait;
  * @property User $replyAuthor
  * @property Question $question
  * @property Answer $answer
+ * @property static $replyComment
  */
 class Comment extends \yii\db\ActiveRecord
 {
@@ -50,11 +51,20 @@ class Comment extends \yii\db\ActiveRecord
             [['created_at', 'author_id', 'reply_author_id', 'reply_comment_id', 'count_approve'], 'integer'],
 
             ['body', function($attr){
-                // 验证是否离上一次评论时间相差 15 秒
+                // 验证评论间隔时间
                 $lastTime = self::find()->select('created_at')->orderBy('id desc')->asArray()->limit(1)->scalar();
                 $sec = Helper::getOpenAskConfig('comment_interval');
                 if ($lastTime && $lastTime > time() - $sec) {
                     $this->addError($attr, \Yii::t('app', '评论间隔不得少于{sec}秒', ['sec' => $sec]));
+                    return;
+                }
+
+                // 不能回复自身
+                if ($this->reply_comment_id) {
+                    if ($this->replyComment->author_id == $this->author_id) {
+                        $this->addError($attr, \Yii::t('app', '不能回复自己的评论'));
+                        return;
+                    }
                 }
             }]
         ];
@@ -74,9 +84,8 @@ class Comment extends \yii\db\ActiveRecord
     {
         if (parent::beforeSave($insert)) {
             if ($insert) {
-                $this->author_id = \Yii::$app->user->id;
                 if ($this->reply_comment_id) {
-                    $this->reply_author_id = Comment::find()->select('author_id')->where(['id' => $this->reply_comment_id])->scalar();
+                    $this->reply_author_id = $this->replyComment->author_id;
                 }
             }
             return true;
@@ -88,6 +97,19 @@ class Comment extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'author_id']);
     }
 
+    /**
+     * 当前评论所回复的评论
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReplyComment()
+    {
+        return $this->hasOne(static::className(), ['id' => 'reply_comment_id']);
+    }
+
+    /**
+     * 当前评论所回复的评论作者
+     * @return \yii\db\ActiveQuery
+     */
     public function getReplyAuthor()
     {
         return $this->hasOne(User::className(), ['id' => 'reply_author_id']);

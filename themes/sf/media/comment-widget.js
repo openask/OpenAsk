@@ -37,10 +37,15 @@ $(document)
             , $comment = $this.closest('.comment-item')
             , $wraper = $this.closest('.widget')
             , comment_id = $comment.data('id')
+            , author_id = $comment.data('author_id')
             , author_display_name = $comment.data('author_display_name')
             , $form = $wraper.find('form')
             // @todo js 翻译
             , $div = $('<div class="replying"><span>回复：' + author_display_name + '</span><a href class="cmd-remove-reply">[x]</a></div>')
+        if (OpenAsk_user_id == author_id) {
+            OpenAsk.message('不能回复自己的评论')
+            return false
+        }
         // 删除之前点击的回复的人如果有的话
         $wraper.find('.replying').remove()
         // 在评论表单上面显示当前正在回复某人评论
@@ -70,8 +75,14 @@ $(document)
     .on('click', '.cmd-comment-vote', function () {
         var $this = $(this)
             , $comment = $this.closest('.comment-item')
+            , author_id = $comment.data('author_id')
             , $count = $comment.find('.count')
             , id = $comment.data('id')
+
+        if (OpenAsk_user_id == author_id) {
+            OpenAsk.message('不能给自己顶踩')
+            return false
+        }
 
         $.post('/comment/like?id=' + id)
             .done(function (json) {
