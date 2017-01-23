@@ -19,8 +19,9 @@ $this->beginContent('@app/views/layouts/minimal.php');
 
 /** @var User $user */
 $user = Yii::$app->user->identity;
-
-$this->registerJs("var OpenAsk_user_id = {$user->id};", \yii\web\View::POS_HEAD);
+if ($user) {
+    $this->registerJs("var OpenAsk_user_id = {$user->id};", \yii\web\View::POS_HEAD);
+}
 ?>
 
 
