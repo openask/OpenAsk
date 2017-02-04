@@ -13,7 +13,7 @@ use app\models\Answer;
 use app\models\Post;
 use app\models\QuestionSearch;
 use app\models\Question;
-use app\models\UserActionHistory;
+use app\models\Feed;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -150,7 +150,7 @@ class QuestionController extends Controller
     {
         \Yii::$app->response->format = 'json';
         $model = $this->findModel($id);
-        $status = UserActionHistory::followQuestion(
+        $status = Feed::followQuestion(
             \Yii::$app->user->id,
             $model
         );
@@ -169,7 +169,7 @@ class QuestionController extends Controller
     {
         \Yii::$app->response->format = 'json';
         $model = $this->findModel($id);
-        $status = UserActionHistory::markQuestion(
+        $status = Feed::markQuestion(
             \Yii::$app->user->id,
             $model
         );

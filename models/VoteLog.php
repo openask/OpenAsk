@@ -13,7 +13,7 @@ use Yii;
  * @property integer $type
  * @property integer $created_at
  */
-class VoteLog extends UserActionHistory
+class VoteLog extends Feed
 {
 
 }

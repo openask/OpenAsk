@@ -21,8 +21,9 @@ use yii\db\IntegrityException;
  * @property integer $time
  * @property integer $question_id
  * @property integer $answer_id
+ * @property User $user
  */
-class UserActionHistory extends ActiveRecord
+class Feed extends ActiveRecord
 {
     const TYPE_FOLLOW_QUESTION = 1; // 关注该问题
     const TYPE_CREATE_QUESTION = 2; // 创建该问题
@@ -36,7 +37,7 @@ class UserActionHistory extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%user_action_history}}';
+        return '{{%feed}}';
     }
 
     /**
@@ -82,7 +83,7 @@ class UserActionHistory extends ActiveRecord
                 return \Yii::t('app', '关注该问题');
             case self::TYPE_CREATE_QUESTION:
                 return \Yii::t('app', '添加该问题');
-            case self::TYPE_VOTE_UP_ANSWER:
+            case self::TYPE_APPROVE_ANSWER:
                 return \Yii::t('app', '赞同该回答');
             case self::TYPE_CREATE_ANSWER:
                 return \Yii::t('app', '回答了该问题');
@@ -99,14 +100,9 @@ class UserActionHistory extends ActiveRecord
         return $this->hasOne(Question::className(), ['id' => 'question_id']);
     }
 
-    public function getAuthor()
+    public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
-    }
-
-    public function getHistoryData()
-    {
-        return $this->hasOne(UserActionHistoryData::className(), ['history_id' => 'id']);
     }
 
     public static function add($attr)

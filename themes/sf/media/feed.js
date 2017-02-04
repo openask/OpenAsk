@@ -2,12 +2,15 @@
  * Created by liu on 23/12/2016.
  */
 
-feed_load(0)
+var $wrap = $('#feed-wrap')
 
-function feed_load(id)
+feed_load()
+
+function feed_load(offset)
 {
-    $.get('/feed?id=' + id)
+    offset = offset||''
+    $.get('/feed?offset=' + offset)
         .done(function (resp) {
-            console.log(resp)
+            $wrap.append(resp)
         })
 }

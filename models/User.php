@@ -2,6 +2,7 @@
 namespace app\models;
 use yii\base\UnknownPropertyException;
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 /**
  * User
@@ -48,4 +49,9 @@ class User extends \dektrium\user\models\User
         return Url::to(['/people/view', 'slug' => $this->profile->slug]);
     }
 
+
+    public function getAvatarHtml($cls = 'avatar avatar-32')
+    {
+        return Html::a(Html::img($this->profile->avatar), $this->getHomePageLink(), ['class' => $cls]);
+    }
 }

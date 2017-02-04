@@ -34,6 +34,11 @@ class Relation extends ActiveRecord
     const TYPE_OPPOSE_QUESTION = 9;
     const TYPE_APPROVE_COMMENT = 10;
 
+    public static function tableName()
+    {
+        return '{{%relation}}';
+    }
+
     public function behaviors()
     {
         return [
@@ -42,5 +47,66 @@ class Relation extends ActiveRecord
                 'updatedAtAttribute' => false,
             ]
         ];
+    }
+
+    /**
+     * 关注的用户ID
+     * @param $userId
+     * @return array
+     */
+    public static function getFollowedUserIds($userId)
+    {
+        return static::find()
+            ->where([
+                'type' => self::TYPE_FOLLOW_USER,
+                'from' => $userId,
+            ])
+            ->select('target')
+            ->column();
+    }
+
+    /**
+     * 关注的问题ID
+     * @param $userId
+     * @return array
+     */
+    public static function getFollowedQuestionIds($userId)
+    {
+        return static::find()
+            ->where([
+                'type' => self::TYPE_FOLLOW_QUESTION,
+                'from' => $userId,
+            ])
+            ->orderBy('id desc')
+            ->limit(1000) // 最近关注的 1000 个问题
+            ->select('target')
+            ->column();
+    }
+
+    /**
+     * 关注的话题的 ID
+     * @param $userId
+     * @return array
+     */
+    public static function getQuestionIdsOfFollowedTopic($userId)
+    {
+        $topicIds = static::find()
+            ->where([
+                'type' => self::TYPE_FOLLOW_TOPIC,
+                'from' => $userId,
+            ])
+            ->select('target')
+            ->column();
+
+        $questionIds = QuestionTopic::find()
+            ->where([
+                'topic_id' => $topicIds
+            ])
+            ->orderBy('id desc')
+            ->limit(1000) // 最近添加话题的 1000 个问题
+            ->select('question_id')
+            ->column();
+
+        return $questionIds;
     }
 }

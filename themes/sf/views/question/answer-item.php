@@ -34,7 +34,7 @@ use yii\helpers\Url;
                 <?php endif; ?>
             </div>
             <div class="col-md-2 col-sm-2 col-xs-2 author-avatar">
-                <?= Html::a(Html::img($model->author->profile->avatar), $model->author->getHomePageLink(), ['class' => 'mr10 avatar avatar-32']) ?>
+                <?= $model->author->getAvatarHtml() ?>
             </div>
             <div class="col-md-2 col-sm-2 hidden-xs author-info">
                 <div class="author-info-wrap">

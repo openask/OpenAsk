@@ -66,7 +66,7 @@ class Question extends ActiveRecord
     public function getTopics()
     {
         return $this->hasMany(Topic::className(), ['id' => 'topic_id'])
-            ->viaTable(QuestionTopic::tableName(), ['post_id' => 'id']);
+            ->viaTable(QuestionTopic::tableName(), ['question_id' => 'id']);
     }
 
     public function scenarios()
@@ -134,15 +134,15 @@ class Question extends ActiveRecord
         parent::afterSave($insert, $changedAttributes);
 
         if ($insert) {
-            UserActionHistory::createQuestion($this->author_id, $this);
+            Feed::createQuestion($this->author_id, $this);
 
             // 新建问题自动关注该问题
-            UserActionHistory::followQuestion($this->author_id, $this, false);
+            Feed::followQuestion($this->author_id, $this, false);
         }
 
         if ($this->_tagValuesSeted) {
             // 删除话题关联数据
-            QuestionTopic::deleteAll(['post_id' => $this->id]);
+            QuestionTopic::deleteAll(['question_id' => $this->id]);
             // 添加话题关联
             foreach ($this->tagValues as $tag) {
                 QuestionTopic::add($tag, $this->id, \Yii::$app->user->id);

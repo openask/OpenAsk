@@ -7,7 +7,7 @@ use app\models\Answer;
 use app\models\Comment;
 use app\models\Question;
 use app\models\Relation;
-use app\models\UserActionHistory;
+use app\models\Feed;
 use yii\db\IntegrityException;
 
 trait VoteTrait

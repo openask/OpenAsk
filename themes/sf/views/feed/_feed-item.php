@@ -6,14 +6,14 @@
  * Time: 11:46
  */
 
-/** @var \app\models\UserActionHistory $userActionHistory */
+/** @var \app\models\Feed $feed */
 
-$profile = $userActionHistory->author->profile;
+$profile = $feed->user->profile;
 ?>
 
-<div class="feed-item">
-    <div class="avatar"><?= \yii\bootstrap\Html::img($profile->avatar) ?></div>
-    <div class="main">
-        <div class="text-muted"><?= $profile->display_name ?> <?= $userActionHistory->getTypeDesc() ?> · <?= Yii::$app->formatter->asRelativeTime($userActionHistory->time) ?></div>
+<div class="feed-item media">
+    <div class="pull-left"><?= $feed->user->getAvatarHtml('avatar avatar-40') ?></div>
+    <div class="media-body">
+        <span class="text-muted"><?= $profile->display_name ?> <?= $feed->getTypeDesc() ?> · <?= Yii::$app->formatter->asRelativeTime($feed->created_at) ?></span>
     </div>
 </div>

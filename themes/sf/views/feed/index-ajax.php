@@ -8,13 +8,6 @@
 
 ?>
 
-
-<?= yii\widgets\ListView::widget([
-    'itemOptions' => ['class' => 'question-item'],
-    'dataProvider' => $dataProvider,
-    'itemView' => '_feed-item',
-    'summary' => '',
-]) ?>
-<?php foreach ($dataProvider->models as $userActionHistory): ?>
-    <?= $this->render('_feed-item', ['userActionHistory' => $userActionHistory]) ?>
+<?php foreach ($dataProvider->models as $feed): ?>
+    <?= $this->render('_feed-item', ['feed' => $feed]) ?>
 <?php endforeach; ?>

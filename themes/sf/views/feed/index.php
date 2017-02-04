@@ -18,7 +18,7 @@
 
             <div class="feed-index">
                 <h4 class="pt30 feed-index-title"><?= Yii::t('app', '最新动态') ?></h4>
-
+                <div id="feed-wrap"></div>
             </div>
         </div>
 

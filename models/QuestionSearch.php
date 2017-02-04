@@ -163,7 +163,7 @@ class QuestionSearch extends Question
     protected function topicId($query, $topic_id)
     {
         return $query->andWhere(['in', 'id',
-            QuestionTopic::find()->select('post_id')->where(['topic_id' => $topic_id])
+            QuestionTopic::find()->select('question_id')->where(['topic_id' => $topic_id])->column()
         ]);
     }
 }

@@ -101,10 +101,10 @@ class Answer extends ActiveRecord
 
             $this->question->updateCounters(['count_answer' => 1]);
 
-            UserActionHistory::createAnswer($this->author_id, $this);
+            Feed::createAnswer($this->author_id, $this);
 
             // 新建回答自动关注该问题
-            UserActionHistory::followQuestion($this->author_id, $this->question, false, true);
+            Feed::followQuestion($this->author_id, $this->question, false, true);
         }
 
     }

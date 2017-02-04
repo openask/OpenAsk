@@ -10,7 +10,7 @@ namespace app\controllers;
 
 
 use app\models\FeedSearch;
-use app\models\UserActionHistory;
+use app\models\Feed;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 
@@ -32,14 +32,14 @@ class FeedController extends Controller
         ];
     }
 
-    public function actionIndex($offset = null)
+    public function actionIndex($offset = '')
     {
         if (\Yii::$app->request->isAjax) {
             $feedSearch = new FeedSearch();
             $models = $feedSearch->search($offset);
             $dataProvider = new ArrayDataProvider();
             $dataProvider->allModels = $models;
-            $dataProvider->modelClass = UserActionHistory::className();
+            $dataProvider->modelClass = Feed::className();
             return $this->renderPartial('index-ajax', [
                 'dataProvider' => $dataProvider,
             ]);
