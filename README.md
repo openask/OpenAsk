@@ -37,4 +37,4 @@ npm install
 DEMO演示站点
 ----
 
-<https://getopenask.com/>
+<https://ask.phpbest.me/>
