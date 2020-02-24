@@ -1,28 +1,22 @@
-var gulp = require('gulp'),
-    header = require('gulp-header'),
-    less = require('gulp-less-sourcemap'),
-    // rename = require('gulp-rename'),
-    fs = require('fs'),
-    path = require('path')
+const gulp = require('gulp'),
+	header = require('gulp-header'),
+	less = require('gulp-less-sourcemap');
 
-var banner = "/*! (c) 2016 OpenAsk | MIT License */\n";
+const banner = "/*! (c) 2016 OpenAsk | MIT License */\n";
 
-gulp.task('default', ['compile'])
+function build(cb) {
+  gulp.src('app.less')
+    .pipe(less({compress: true, relativeUrls: true}))
+    .pipe(header(banner))
+    .pipe(gulp.dest('.'))
+  cb();
+}
 
-gulp.task('compile', function () {
-    gulp.src('app.less')
-        // .pipe(less({compress: true, relativeUrls: true}))
-        .pipe(less({
-			compress: true
-			,sourceMap: {
-				sourceMapRootpath: ''
-			}
-		}))
-        // .pipe(less())
-        // .pipe(header(banner))
-        .pipe(gulp.dest('.'))
-})
+function watch(cb) {
+  gulp.watch('*.less', gulp.series('build'))
+	cb();
+}
 
-gulp.task('watch', function () {
-    gulp.watch('*.less', ['compile'])
-})
+exports.watch = watch;
+exports.build = build;
+exports.default = build;

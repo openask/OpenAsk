@@ -9,4 +9,4 @@ kill `ps -ef|grep '\-S 127.0.0.1:8080 \-t'|head -n1|awk '{print $2}'`
 # kill gulp
 kill `cat $RUNTIME_DIR/run-start-dev-gulp`
 # kill browser-sync
-kill `ps -ef|grep 'browser-sync start -p 127.0.0.1:8080 -f'|head -n1|awk '{print $2}'`
+kill `cat $RUNTIME_DIR/run-start-dev-browser-sync`

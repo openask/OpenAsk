@@ -24,7 +24,7 @@ php yii serve --docroot=@app/web --port=8080 127.0.0.1
 
 - 安装开发工具
 ```
-npm install -g gulp browser-sync
+npm install -g browser-sync
 cd themes/sf/media
 npm install
 ```
