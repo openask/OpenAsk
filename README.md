@@ -12,6 +12,10 @@ OpenAsk 是一个开源的问答系统。
 ```
 composer install
 ```
+- 执行 migration
+```
+php yii migrate
+```
 - 启动 WEB 服务
 ```
 php yii serve --docroot=@app/web --port=8080 127.0.0.1
@@ -37,4 +41,4 @@ npm install
 DEMO演示站点
 ----
 
-<https://ask.phpbest.me/>
+<https://openask.upliu.net/>
