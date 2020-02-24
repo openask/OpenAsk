@@ -15,8 +15,8 @@ require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 require(__DIR__ . '/config/bootstrap.php');
 
-$commonLocal = __DIR__ . '/../config/common-local.php';
-$consoleLocal = __DIR__ . '/../config/console-local.php';
+$commonLocal = __DIR__ . '/config/common-local.php';
+$consoleLocal = __DIR__ . '/config/console-local.php';
 $config = yii\helpers\ArrayHelper::merge(
     require(__DIR__ . '/config/common.php'),
     require(__DIR__ . '/config/console.php'),
