@@ -23,6 +23,13 @@ $config = [
         'stubs' => [
             'class' => 'bazilio\stubsgenerator\StubsController',
         ],
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => [
+                '@app/migrations',
+                '@vendor/dektrium/yii2-user/migrations',
+            ],
+        ],
     ],
     /*
     'controllerMap' => [
