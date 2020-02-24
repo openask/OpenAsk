@@ -162,6 +162,9 @@ class QuestionSearch extends Question
 
     protected function topicId($query, $topic_id)
     {
+        if (empty($topic_id)) {
+            $query->andWhere('1=0');
+        }
         return $query->andWhere(['in', 'id',
             QuestionTopic::find()->select('question_id')->where(['topic_id' => $topic_id])->column()
         ]);

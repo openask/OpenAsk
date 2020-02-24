@@ -60,7 +60,7 @@ class QuestionController extends Controller
         if ($topic) {
             $topic = Topic::findByName($topic);
             if (!$topic) {
-                throw new NotFoundHttpException();
+                $topic = new Topic();
             }
         } else {
             $topic = null;
