@@ -54,4 +54,13 @@ class User extends \dektrium\user\models\User
     {
         return Html::a(Html::img($this->profile->avatar), $this->getHomePageLink(), ['class' => $cls]);
     }
+
+    public function __get($name)
+    {
+        try {
+            return parent::__get($name);
+        } catch (UnknownPropertyException $e) {
+            return $this->profile->{$name};
+        }
+    }
 }

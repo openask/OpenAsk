@@ -22,6 +22,8 @@ use yii\db\IntegrityException;
  * @property integer $question_id
  * @property integer $answer_id
  * @property User $user
+ * @property Question $question
+ * @property Answer $answer
  */
 class Feed extends ActiveRecord
 {

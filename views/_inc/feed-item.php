@@ -6,10 +6,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $feed app\models\BaseFeed */
+/* @var $feed app\models\Feed */
 
-$author = $feed->author;
-$post = $feed->post;
+$author = $feed->user;
+$answer = $feed->answer;
 $question = $feed->question;
 
 $QUESTION_ID = 47638946;
@@ -35,10 +35,10 @@ $this->registerJsFile('@web/static/dist/feed-item.js', ['depends' => AppAsset::c
         <div class="i-feed-source">
             <a href="<?=Url::to(['/people/view', 'slug' => $author->slug])?>"> <?= $author->display_name ?></a>
             <?= $feed->getTypeDesc() ?>
-            <span class="i-time"><?=Yii::$app->formatter->format($feed->time, 'RelativeTime')?></span>
+            <span class="i-time"><?=Yii::$app->formatter->format($feed->created_at, 'RelativeTime')?></span>
         </div>
         <h2 class="i-title">
-            <a target="_blank" href="<?=Url::to(['/question/view', 'id' => $post->id ])?>"><?= $post->title ?></a>
+            <a target="_blank" href="<?=Url::to(['/question/view', 'id' => $question->id ])?>"><?= $question->title ?></a>
             <span class="i-ignore cmd-ignore-question" data-toggle="tooltip" data-placement="bottom" title="<?=Yii::t('app', '不再显示')?>">&times;</span>
         </h2>
         <div class="cmd-expand i-entry-body">
@@ -53,7 +53,7 @@ $this->registerJsFile('@web/static/dist/feed-item.js', ['depends' => AppAsset::c
                                 </span>
                 </div>
             </div>
-            <?php if ($post->getIsAnswer()): ?>
+            <?php if ($answer): ?>
             <div class="i-author-info">
                 <a class="i-author-link" href="<?=Url::to(['/people/view', 'slug' => $ANSWER_USER])?>"><?=$ANSWER_NICK?></a>
                 <?=$ANSWER_BIO?>
@@ -77,7 +77,7 @@ $this->registerJsFile('@web/static/dist/feed-item.js', ['depends' => AppAsset::c
             <a href="javascript:;" class="i-meta-item cmd-pay-attention"><span class="glyphicon glyphicon-plus"></span> <?=Yii::t('app', '关注问题')?></a>
             <a href="javascript:;" class="i-meta-item cmd-show-comment"><span class="glyphicon glyphicon-comment"></span> <?=Yii::t('app', '{n} 条评论', ['n' => 7])?></a>
             <a href="javascript:;" class="i-meta-item"><span class="glyphicon glyphicon-comment"></span> <?=Yii::t('app', '{n} 个回答', ['n' => 28])?></a>
-            <?php if ($post->getIsAnswer()) : ?>
+            <?php if ($answer) : ?>
             <a href="javascript:;" class="i-meta-item cmd-thank"><span class="glyphicon glyphicon-heart"></span> <?=Yii::t('app', '感谢')?></a>
             <a href="javascript:;" class="i-meta-item cmd-share"><span class="glyphicon glyphicon-share-alt"></span> <?=Yii::t('app', '分享')?></a>
             <a href="javascript:;" class="i-meta-item cmd-bookmark"><span class="glyphicon glyphicon-bookmark"></span> <?=Yii::t('app', '收藏')?></a>

@@ -15,6 +15,7 @@ use app\assets\AppAsset;
 
 $this->title = $user->display_name;
 
+$feed = \app\models\Feed::findOne(102);
 ?>
 <div class="i-people-view">
     <div class="i-profile-section i-people-info">
@@ -106,7 +107,7 @@ $this->title = $user->display_name;
     <dl class="i-profile-section">
         <dt><?= Yii::t('app', '最新动态') ?></dt>
         <?php $i = 10; while ($i-- > 0) { ?>
-<!--            <dd>--><?//= $this->render('/_inc/feed-item') ?><!--</dd>-->
+            <dd><?= $this->render('/_inc/feed-item', ['feed' => $feed]) ?></dd>
         <?php } ?>
         <dd class="i-load-more-wrap">
             <button class="i-load-more cmd-load-more">
