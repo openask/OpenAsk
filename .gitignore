@@ -29,3 +29,4 @@ phpunit.phar
 
 node_modules
 /vendor
+/config/*-local.php
